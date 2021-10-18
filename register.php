@@ -379,7 +379,7 @@
         $(document).ready(function() {
             $('#registerButton').click(function(event) {
                 if($('#registerForm')[0].checkValidity()) {
-					
+
                     $.ajax({
                         url: "controllers/register.php",
                         type: "POST",
@@ -396,18 +396,16 @@
                         },
 						dataType: 'json',
                         success: function(dataResult) {
-							
+
 							if(dataResult.success) {
 								//todo route to another page
 							} else {
-								console.log('input[name=' + dataResult.name + ']');
-								console.log($('input[name=' + dataResult.name + ']'));
 								$('input[name=' + dataResult.name + ']').addClass('is-invalid');
 								$('input[name=' + dataResult.name + ']').next().next().html(dataResult.message);
 								$('input[name=' + dataResult.name + ']')[0].setCustomValidity(dataResult.message);
 								$('input[name=' + dataResult.name + ']').focus();
 							}
-                            console.log(dataResult);
+
                         }
                     });
 
@@ -415,7 +413,7 @@
                 }
 
             });
-			
+
 			$("#registerEmail").keydown(function() {
 				$(this).removeClass('is-invalid');
 				$(this)[0].setCustomValidity("");
