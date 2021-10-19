@@ -19,6 +19,8 @@
     <link rel="stylesheet" href="css/back/custom.css">
     <!-- Favicon-->
     <link rel="shortcut icon" href="img/back/favicon.png">
+    <!-- Captcha Script -->
+    <script src="https://www.google.com/recaptcha/api.js?render=6LeWZNocAAAAANfVdnLWMk38kUMamH2l1zHIzkhv"></script>
   </head>
   <body>
     <div class="container-fluid px-0">
@@ -46,9 +48,9 @@
               <div class="mb-4">
                 <label class="form-label" for="validationCustomUsername">Username</label>
                 <div class="input-group has-validation"><span class="input-group-text" id="inputGroupPrepend">@</span>
-                  <input class="form-control" id="username" type="text" name="username" aria-describedby="inputGroupPrepend" required="">
+                  <input class="form-control" id="username" type="text" minlength=4 maxlength=16 name="username" aria-describedby="inputGroupPrepend" required="">
                   <div class="valid-feedback">Looks good!</div>
-                  <div class="invalid-feedback"> Please choose a username </div>
+                  <div class="invalid-feedback">Please choose a valid 4-16 lengthed username</div>
                 </div>
               </div>
               <div class="mb-4">
@@ -339,6 +341,8 @@
               <div class="d-grid mb-5">
                 <button id="registerButton" name="register" class="btn btn-primary text-uppercase">Register</button>
               </div>
+
+
               <!-- Link-->
               <p class="text-center"><small class="text-muted text-center">Already have an account? <a href="login.html">Log in</a>.</small></p>
 
@@ -351,6 +355,8 @@
         </div>
       </div>
     </div>
+
+    <div class="modal"><!-- Place at bottom of page --></div>
     <!-- JavaScript files-->
     <script src="vendor/back/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
@@ -377,39 +383,57 @@
 
     <script>
         $(document).ready(function() {
+
             $('#registerButton').click(function(event) {
+
                 if($('#registerForm')[0].checkValidity()) {
 
-                    $.ajax({
-                        url: "controllers/register.php",
-                        type: "POST",
-                        data: {
-                            'fname': $('#fname').val(),
-                            'lname': $('#lname').val(),
-                            'username': $('#username').val(),
-                            'city': $('#city').val(),
-                            'country': $('#country').val(),
-                            'zip': $('#zip').val(),
-                            'email': $('#registerEmail').val(),
-                            'password': $('#registerPassword').val(),
-                            'confirmPassword': $('#confirmPassword').val(),
-                        },
-						dataType: 'json',
-                        success: function(dataResult) {
+                    event.preventDefault();
 
-							if(dataResult.success) {
-								//todo route to another page
-							} else {
-								$('input[name=' + dataResult.name + ']').addClass('is-invalid');
-								$('input[name=' + dataResult.name + ']').next().next().html(dataResult.message);
-								$('input[name=' + dataResult.name + ']')[0].setCustomValidity(dataResult.message);
-								$('input[name=' + dataResult.name + ']').focus();
-							}
+                    grecaptcha.ready(function() {
+                        $("body").addClass("loading");
 
-                        }
+
+                        grecaptcha.execute('6LeWZNocAAAAANfVdnLWMk38kUMamH2l1zHIzkhv', {action: 'register'}).then(function(token) {
+                            $('#registerForm').prepend('<input type="hidden" name="token" value="' + token + '">');
+                            $('#registerForm').prepend('<input type="hidden" name="action" value="register">');
+
+                            $.ajax({
+                                url: "controllers/register.php",
+                                type: "POST",
+                                data: {
+                                    'fname': $('#fname').val(),
+                                    'lname': $('#lname').val(),
+                                    'username': $('#username').val(),
+                                    'city': $('#city').val(),
+                                    'country': $('#country').val(),
+                                    'zip': $('#zip').val(),
+                                    'email': $('#registerEmail').val(),
+                                    'password': $('#registerPassword').val(),
+                                    'confirmPassword': $('#confirmPassword').val(),
+                                    'token': token,
+                                    'action': 'register'
+                                },
+                                dataType: 'json',
+                                complete: function() { $("body").removeClass("loading"); },
+                                success: function(dataResult) {
+
+
+                                    if(dataResult.success) {
+                                        alert('nigger just registered');
+                                    } else {
+                                        $('input[name=' + dataResult.name + ']').addClass('is-invalid');
+                                        $('input[name=' + dataResult.name + ']').next().next().html(dataResult.message);
+                                        $('input[name=' + dataResult.name + ']')[0].setCustomValidity(dataResult.message);
+                                        $('input[name=' + dataResult.name + ']').focus();
+                                    }
+
+                                }
+                            });
+                        });;
                     });
 
-                    event.preventDefault();
+
                 }
 
             });

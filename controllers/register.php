@@ -1,10 +1,12 @@
 <?php
 
 include ('database/connection.php');
+require_once 'captcha/autoload.php';
 
-session_start();
+define("RECAPTCHA_V3_SECRET_KEY", '6LeWZNocAAAAAHTc8R3IH_NN28nmq20sdIsYd2vW');
 
-// initializing variables
+//session_start();
+
 $fname = "";
 $lname = "";
 $username = "";
@@ -15,6 +17,7 @@ $email = "";
 $password = "";
 $confirmPassword = "";
 
+if($_SERVER["REQUEST_METHOD"] == "POST") {
     $data = array();
 
     $conn = openCon();
@@ -29,78 +32,92 @@ $confirmPassword = "";
     $password = testInput(mysqli_real_escape_string($conn, $_POST['password']));
     $confirmPassword = testInput(mysqli_real_escape_string($conn, $_POST['confirmPassword']));
 
-    if(empty($fname)) {
+    $token = $_POST['token'];
+    $action = $_POST['action'];
+
+    if (empty($fname)) {
         $data['success'] = false;
         $data['name'] = 'fname';
         $data['message'] = 'First name cannot be empty.';
-    } else if(empty($lname)) {
+    } else if (empty($lname)) {
         $data['success'] = false;
         $data['name'] = 'lname';
         $data['message'] = 'Last name cannot be empty.';
-    } else if(empty($username)) {
+    } else if (empty($username)) {
         $data['success'] = false;
         $data['name'] = 'lname';
         $data['message'] = 'Username cannot be empty.';
-    } else if(empty($city)) {
+    } else if (empty($city)) {
         $data['success'] = false;
         $data['name'] = 'city';
         $data['message'] = 'City cannot be empty.';
-    } else if(empty($country)) {
+    } else if (empty($country)) {
         $data['success'] = false;
         $data['name'] = 'country';
         $data['message'] = 'Country cannot be empty.';
-    } else if(empty($zip)) {
+    } else if (empty($zip)) {
         $data['success'] = false;
         $data['name'] = 'zip';
         $data['message'] = 'Zip code cannot be empty.';
-    } else if(empty($email)) {
+    } else if (empty($email)) {
         $data['success'] = false;
         $data['name'] = 'email';
         $data['message'] = 'Email cannot be empty.';
-    } else if(empty($password)) {
+    } else if (empty($password)) {
         $data['success'] = false;
         $data['name'] = 'password';
         $data['message'] = 'Password cannot be empty.';
-    } else if(empty($confirmPassword)) {
+    } else if (empty($confirmPassword)) {
         $data['success'] = false;
         $data['name'] = 'confirmPassword';
         $data['message'] = 'Confirm Password cannot be empty.';
-    } else if(preg_match('/^[a-zA-Z0-9._-]{2,}@[a-zA-Z0-9.-]{2,}\.[a-zA-Z]{2,}$/', $email) != 1) {
+    } else if (preg_match('/^[a-zA-Z0-9._-]{2,}@[a-zA-Z0-9.-]{2,}\.[a-zA-Z]{2,}$/', $email) != 1) {
         $data['success'] = false;
         $data['name'] = 'email';
         $data['message'] = 'Email is not well formatted';
-    } else if($password !== $confirmPassword) {
+    } else if ($password !== $confirmPassword) {
         $data['success'] = false;
         $data['name'] = 'confirmPassword';
         $data['message'] = 'Password is not the same';
     } else {
-        $duplicate = mysqli_query($conn,"SELECT * FROM USERS WHERE username='$username'");
 
-        if (mysqli_num_rows($duplicate) > 0) {
-            $data['success'] = false;
-            $data['name'] = 'username';
-            $data['message'] = 'Username already exists!';
-        } else {
-            $duplicate = mysqli_query($conn,"SELECT * FROM USERS WHERE email='$email'");
+        $recaptcha = new \ReCaptcha\ReCaptcha(RECAPTCHA_V3_SECRET_KEY);
+        $resp = $recaptcha->setExpectedAction($action)
+            ->setScoreThreshold(0.5)
+            ->verify($token, $_SERVER['REMOTE_ADDR']);
+
+        if ($resp->isSuccess()) {
+            $duplicate = mysqli_query($conn, "SELECT * FROM USERS WHERE username='$username'");
 
             if (mysqli_num_rows($duplicate) > 0) {
                 $data['success'] = false;
-                $data['name'] = 'email';
-                $data['message'] = 'Email already exists!';
+                $data['name'] = 'username';
+                $data['message'] = 'Username already exists!';
             } else {
-                $sql = "INSERT INTO USERS VALUES (0, '$username','$email','$password','$fname','$lname','$city','$country','$zip');";
+                $duplicate = mysqli_query($conn, "SELECT * FROM USERS WHERE email='$email'");
 
-                if (mysqli_query($conn, $sql)) {
-                    $data['success'] = true;
+                if (mysqli_num_rows($duplicate) > 0) {
+                    $data['success'] = false;
+                    $data['name'] = 'email';
+                    $data['message'] = 'Email already exists!';
+                } else {
+                    $sql = "INSERT INTO USERS VALUES (0, '$username','$email','$password','$fname','$lname','$city','$country','$zip');";
+
+                    if (mysqli_query($conn, $sql)) {
+                        $data['success'] = true;
+                    }
                 }
             }
+        } else {
+            $data['success'] = false;
         }
     }
 
 
     closeCon($conn);
-	
+
     echo json_encode($data);
+}
 
 function testInput($data) {
     $data = trim($data);
