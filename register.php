@@ -1,3 +1,11 @@
+<?php
+session_start();
+
+    if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true) {
+        header("location: index.php");
+        exit;
+    }
+?>
 <!DOCTYPE html>
 <html>
   <head>
@@ -393,7 +401,6 @@
                     grecaptcha.ready(function() {
                         $("body").addClass("loading");
 
-
                         grecaptcha.execute('6LeWZNocAAAAANfVdnLWMk38kUMamH2l1zHIzkhv', {action: 'register'}).then(function(token) {
                             $('#registerForm').prepend('<input type="hidden" name="token" value="' + token + '">');
                             $('#registerForm').prepend('<input type="hidden" name="action" value="register">');
@@ -418,7 +425,7 @@
                                 complete: function() { $("body").removeClass("loading"); },
                                 success: function(dataResult) {
 
-
+                                    console.log(dataResult);
                                     if(dataResult.success) {
                                         alert('nigger just registered');
                                     } else {
