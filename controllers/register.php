@@ -101,12 +101,19 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                     $verifCode = substr(md5(mt_rand()),0,15);
                     $defaultPath = "img/avatars/default.png";
 
+                    $password = md5($password);
+                    $password = sha1($password);
+                    $salt = "ka12n3cma993834canzk4la";
+
+                    $password = crypt($password,$salt);
+
                     $sql = "INSERT INTO USERS VALUES (0, '$username','$email','$password','$fname','$lname','$city','$country','$zip', '$verifCode', 0, '$defaultPath');";
 
                     if (mysqli_query($conn, $sql)) {
                         $userId = mysqli_insert_id($conn);
 
                         $data['success'] = true;
+
                         $_SESSION['loggedin'] = true;
                         $_SESSION['verified'] = false;
                         $_SESSION['id'] = $userId;

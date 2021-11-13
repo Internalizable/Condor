@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
- <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css'> 
+ <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css'>
  <style>
 @import url("https://fonts.googleapis.com/css?family=Montserrat:400,400i,700");
 *,
@@ -74,16 +74,28 @@ p {
 </style>
 </head>
 
+<?php
+    if(!isset($_GET['code']))
+        $_GET['code'] = 404;
+?>
 <body>
 
-
 <main>
-  <h1>4<span><i class="fas fa-ghost"></i></span>4</h1>
-  <h2>Error: 404 page not found</h2>
-  <p>Sorry, the page you're looking for cannot be accessed</p>
+  <h1><span><i class="fas fa-ghost"></i></span></h1>
+  <h2>Error: <?php echo $_GET['code'] ?></h2>
+
+  <p>
+      <?php
+        switch($_GET['code']) {
+            case 404:
+                echo 'The requested page could not be found.';
+                break;
+        }
+      ?>
+  </p>
 </main>
 
 
-    </body>
+</body>
 </html>
 

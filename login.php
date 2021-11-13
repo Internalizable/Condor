@@ -1,9 +1,19 @@
+<?php
+
+session_start();
+
+if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
+    header("location: index.php");
+    exit;
+}
+?>
+
 <!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Bubbly - Boootstrap 5 Admin template by Bootstrapious.com</title>
+    <title>Condor - Login</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="all,follow">
@@ -28,10 +38,12 @@
             <div class="text-center"><img class="img-fluid mb-4" src="img/back/brand/brand-1.svg" alt="..." style="max-width: 6rem;">
               <h1 class="h4 text-uppercase mb-5">Welcome Back</h1>
             </div>
-            <form method="get" action="index.html">
+            <form id="signform" class="needs-validation" method="post">
               <div class="mb-3">
-                <label class="form-label">Email Address</label>
-                <input class="form-control" name="loginUsername" type="email" autocomplete="off">
+                <label class="form-label">Username</label>
+                <input class="form-control" id="username" name="username" minlength=4 maxlength=16 required>
+                  <div class="valid-feedback">Looks good!</div>
+                  <div class="invalid-feedback">Please choose a valid 4-16 lengthed username</div>
               </div>
               <div class="mb-4">
                 <div class="row">
@@ -40,7 +52,9 @@
                   </div>
                   <div class="col-auto"><a class="form-text small text-muted" href="#">Forgot your password?</a></div>
                 </div>
-                <input class="form-control" name="loginPassword" type="password">
+                <input class="form-control" id="password" name="password" type="password">
+                  <div class="valid-feedback">Looks good!</div>
+                  <div class="invalid-feedback"></div>
               </div>
               <div class="form-check mb-4">
                 <input class="form-check-input" id="remember" type="checkbox">
@@ -48,14 +62,14 @@
               </div>
               <!-- Submit-->
               <div class="d-grid mb-5">
-                <button class="btn btn-primary text-uppercase">Sign in</button>
+                <button id="signin" class="btn btn-primary text-uppercase">Sign in</button>
               </div>
               <!-- Link-->
               <p class="text-sm text-muted text-center">
-                 Don't have an account yet? <a href="register.html">Register</a>.</p>
+                 Don't have an account yet? <a href="register.php">Register</a>.</p>
 
               <p class="text-sm text-muted text-center">
-                Go <a href="index.html">back</a>.</p>
+                Go <a href="index.php">back</a>.</p>
             </form>
           </div>
         </div>
@@ -75,6 +89,7 @@
     <script src="vendor/back/prismjs/plugins/normalize-whitespace/prism-normalize-whitespace.min.js"></script>
     <script src="vendor/back/prismjs/plugins/toolbar/prism-toolbar.min.js"></script>
     <script src="vendor/back/prismjs/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+    <script src="vendor/front/jquery/jquery.js"></script>
     <script type="text/javascript">
       // Optional
       Prism.plugins.NormalizeWhitespace.setDefaults({
@@ -84,6 +99,58 @@
       'right-trim': true,
       });
 
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            $('#signin').click(function(event) {
+                if($('#signform')[0].checkValidity()) {
+                    event.preventDefault();
+
+                    console.log("sending");
+
+                    $.ajax({
+                        url: "controllers/login.php",
+                        type: "POST",
+                        data: {
+                            'username': $('#username').val(),
+                            'password': $('#password').val()
+                        },
+                        dataType: 'json',
+                        complete: function() { $("body").removeClass("loading"); },
+                        success: function(dataResult) {
+
+                            console.log(dataResult);
+
+                            if(dataResult.success) {
+                                alert('nigger just registered');
+                            } else {
+                                $('input[name=' + dataResult.name + ']').addClass('is-invalid');
+                                $('input[name=' + dataResult.name + ']').next().next().html(dataResult.message);
+                                $('input[name=' + dataResult.name + ']')[0].setCustomValidity(dataResult.message);
+                                $('input[name=' + dataResult.name + ']').focus();
+                            }
+
+                        }
+                    });
+
+
+                }
+
+            });
+
+            $("#username").keydown(function() {
+                $(this).removeClass('is-invalid');
+                $(this)[0].setCustomValidity("");
+                $(this).next().html("");
+            });
+
+            $("#password").keydown(function() {
+                $(this).removeClass('is-invalid');
+                $(this)[0].setCustomValidity("");
+                $(this).next().html("");
+            });
+        });
     </script>
     <!-- FontAwesome CSS - loading as last, so it doesn't block rendering-->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
