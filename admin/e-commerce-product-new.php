@@ -272,7 +272,7 @@ require_once("../controllers/database/connection.php");
        
         <div class="container-fluid px-lg-4 px-xl-5">
             <!-- here begins the main form-->
-               <form id="productInfo" action="insert-product-inter.php" method="post" >
+               <form id="productInfo" action="insert-product-inter.php" method="post"  enctype="multipart/form-data" >
                    
               <!-- Breadcrumbs -->
               <div class="page-breadcrumb">
