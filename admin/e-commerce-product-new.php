@@ -2,8 +2,6 @@
 
 require_once("../controllers/database/connection.php");
 
-
-
 ?>
 
 <!DOCTYPE html>
@@ -32,12 +30,12 @@ require_once("../controllers/database/connection.php");
     <!-- Custom stylesheet - for your changes-->
     <link rel="stylesheet" href="../css/back/custom.css">
     <!-- Favicon-->
-    <link rel="shortcut icon" href="img/favicon.png">
+    <link rel="shortcut icon" href="../img/back/favicon.png">
   </head>
   <body>
     <!-- navbar-->
     <header class="header">
-      <nav class="navbar navbar-expand-lg px-4 py-2 bg-white shadow"><a class="sidebar-toggler text-gray-500 me-4 me-lg-5 lead" href="#"><i class="fas fa-align-left"></i></a><a class="navbar-brand fw-bold text-uppercase text-base" href="index.html"><span class="d-none d-brand-partial">Condor </span></a>
+      <nav class="navbar navbar-expand-lg px-4 py-2 bg-white shadow"><a class="sidebar-toggler text-gray-500 me-4 me-lg-5 lead" href="#"><i class="fas fa-align-left"></i></a><a class="navbar-brand fw-bold text-uppercase text-base" href="../index.html"><span class="d-none d-brand-partial">Condor </span></a>
         <ul class="ms-auto d-flex align-items-center list-unstyled mb-0">
           <li class="nav-item dropdown">
             <form class="ms-auto me-4 d-none d-lg-block" id="searchForm">
@@ -64,7 +62,7 @@ require_once("../controllers/database/connection.php");
                   <div class="text ms-2">
                     <p class="mb-0">You have 2 followers</p>
                   </div>
-                </div></a><a class="dropdown-item" href="#"> 
+                </div></a><a class="dropdown-item" href="#">
                 <div class="d-flex align-items-center">
                   <div class="icon icon-sm bg-green text-white"><i class="fas fa-envelope"></i></div>
                   <div class="text ms-2">
@@ -110,7 +108,7 @@ require_once("../controllers/database/connection.php");
                 <h6 class="text-uppercase font-weight-bold">Mark Stephen</h6><small>Web Developer</small>
               </div>
               <div class="dropdown-divider"></div><a class="dropdown-item" href="#">Settings</a><a class="dropdown-item" href="#">Activity log       </a>
-              <div class="dropdown-divider"></div><a class="dropdown-item" href="login.html">Logout</a>
+              <div class="dropdown-divider"></div><a class="dropdown-item" href="../login.html">Logout</a>
             </div>
           </li>
         </ul>
@@ -120,11 +118,11 @@ require_once("../controllers/database/connection.php");
       <div class="sidebar py-3" id="sidebar">
         <h6 class="sidebar-heading">Main</h6>
         <ul class="list-unstyled">
-              <li class="sidebar-list-item"><a class="sidebar-link text-muted" href="index.html">
+              <li class="sidebar-list-item"><a class="sidebar-link text-muted" href="../index.html">
                       <svg class="svg-icon svg-icon-md me-3">
                         <use xlink:href="icons/orion-svg-sprite.svg#real-estate-1"> </use>
                       </svg><span class="sidebar-link-title">Dashboard</span></a></li>
-              <li class="sidebar-list-item"><a class="sidebar-link text-muted " href="#" data-bs-target="#cmsDropdown" role="button" aria-expanded="false" data-bs-toggle="collapse"> 
+              <li class="sidebar-list-item"><a class="sidebar-link text-muted " href="#" data-bs-target="#cmsDropdown" role="button" aria-expanded="false" data-bs-toggle="collapse">
                       <svg class="svg-icon svg-icon-md me-3">
                         <use xlink:href="icons/orion-svg-sprite.svg#reading-1"> </use>
                       </svg><span class="sidebar-link-title">CMS </span></a>
@@ -135,7 +133,7 @@ require_once("../controllers/database/connection.php");
                   <li class="sidebar-list-item"><a class="sidebar-link text-muted" href="cms-media.html">Media library</a></li>
                 </ul>
               </li>
-              <li class="sidebar-list-item"><a class="sidebar-link text-muted " href="#" data-bs-target="#widgetsDropdown" role="button" aria-expanded="false" data-bs-toggle="collapse"> 
+              <li class="sidebar-list-item"><a class="sidebar-link text-muted " href="#" data-bs-target="#widgetsDropdown" role="button" aria-expanded="false" data-bs-toggle="collapse">
                       <svg class="svg-icon svg-icon-md me-3">
                         <use xlink:href="icons/orion-svg-sprite.svg#statistic-1"> </use>
                       </svg><span class="sidebar-link-title">Widgets </span></a>
@@ -144,7 +142,7 @@ require_once("../controllers/database/connection.php");
                   <li class="sidebar-list-item"><a class="sidebar-link text-muted" href="widgets-data.html">Data</a></li>
                 </ul>
               </li>
-              <li class="sidebar-list-item"><a class="sidebar-link text-muted active" href="#" data-bs-target="#e-commerceDropdown" role="button" aria-expanded="true" data-bs-toggle="collapse"> 
+              <li class="sidebar-list-item"><a class="sidebar-link text-muted active" href="#" data-bs-target="#e-commerceDropdown" role="button" aria-expanded="true" data-bs-toggle="collapse">
                       <svg class="svg-icon svg-icon-md me-3">
                         <use xlink:href="icons/orion-svg-sprite.svg#delivery-truck-1"> </use>
                       </svg><span class="sidebar-link-title">E-commerce </span></a>
@@ -156,7 +154,7 @@ require_once("../controllers/database/connection.php");
                   <li class="sidebar-list-item"><a class="sidebar-link text-muted" href="e-commerce-customers.html">Customers</a></li>
                 </ul>
               </li>
-              <li class="sidebar-list-item"><a class="sidebar-link text-muted " href="#" data-bs-target="#pagesDropdown" role="button" aria-expanded="false" data-bs-toggle="collapse"> 
+              <li class="sidebar-list-item"><a class="sidebar-link text-muted " href="#" data-bs-target="#pagesDropdown" role="button" aria-expanded="false" data-bs-toggle="collapse">
                       <svg class="svg-icon svg-icon-md me-3">
                         <use xlink:href="icons/orion-svg-sprite.svg#paper-stack-1"> </use>
                       </svg><span class="sidebar-link-title">Pages </span></a>
@@ -169,18 +167,18 @@ require_once("../controllers/database/connection.php");
                   <li class="sidebar-list-item"><a class="sidebar-link text-muted" href="pages-knowledge-base-topic.html">Knowledge base - Topic</a></li>
                 </ul>
               </li>
-              <li class="sidebar-list-item"><a class="sidebar-link text-muted " href="#" data-bs-target="#userDropdown" role="button" aria-expanded="false" data-bs-toggle="collapse"> 
+              <li class="sidebar-list-item"><a class="sidebar-link text-muted " href="#" data-bs-target="#userDropdown" role="button" aria-expanded="false" data-bs-toggle="collapse">
                       <svg class="svg-icon svg-icon-md me-3">
                         <use xlink:href="icons/orion-svg-sprite.svg#man-1"> </use>
                       </svg><span class="sidebar-link-title">User </span></a>
                 <ul class="sidebar-menu list-unstyled collapse " id="userDropdown">
-                  <li class="sidebar-list-item"><a class="sidebar-link text-muted" href="login.html">Login page</a></li>
+                  <li class="sidebar-list-item"><a class="sidebar-link text-muted" href="../login.html">Login page</a></li>
                   <li class="sidebar-list-item"><a class="sidebar-link text-muted" href="register.html">Register</a></li>
                   <li class="sidebar-list-item"><a class="sidebar-link text-muted" href="login-2.html">Login v.2 <span class="badge bg-info ms-2 text-decoration-none">New</span></a></li>
                   <li class="sidebar-list-item"><a class="sidebar-link text-muted" href="register-2.html">Register v.2 <span class="badge bg-info ms-2 text-decoration-none">New</span></a></li>
                 </ul>
               </li>
-              <li class="sidebar-list-item"><a class="sidebar-link text-muted " href="#" data-bs-target="#componentsDropdown" role="button" aria-expanded="false" data-bs-toggle="collapse"> 
+              <li class="sidebar-list-item"><a class="sidebar-link text-muted " href="#" data-bs-target="#componentsDropdown" role="button" aria-expanded="false" data-bs-toggle="collapse">
                       <svg class="svg-icon svg-icon-md me-3">
                         <use xlink:href="icons/orion-svg-sprite.svg#sorting-1"> </use>
                       </svg><span class="sidebar-link-title">Components </span></a>
@@ -194,7 +192,7 @@ require_once("../controllers/database/connection.php");
                   <li class="sidebar-list-item"><a class="sidebar-link text-muted" href="components-preloader.html">Preloaders</a></li>
                 </ul>
               </li>
-              <li class="sidebar-list-item"><a class="sidebar-link text-muted " href="#" data-bs-target="#chartsDropdown" role="button" aria-expanded="false" data-bs-toggle="collapse"> 
+              <li class="sidebar-list-item"><a class="sidebar-link text-muted " href="#" data-bs-target="#chartsDropdown" role="button" aria-expanded="false" data-bs-toggle="collapse">
                       <svg class="svg-icon svg-icon-md me-3">
                         <use xlink:href="icons/orion-svg-sprite.svg#pie-chart-1"> </use>
                       </svg><span class="sidebar-link-title">Charts </span></a>
@@ -203,7 +201,7 @@ require_once("../controllers/database/connection.php");
                   <li class="sidebar-list-item"><a class="sidebar-link text-muted" href="charts-gauge-sparkline.html">Gauge + Sparkline</a></li>
                 </ul>
               </li>
-              <li class="sidebar-list-item"><a class="sidebar-link text-muted " href="#" data-bs-target="#formsDropdown" role="button" aria-expanded="false" data-bs-toggle="collapse"> 
+              <li class="sidebar-list-item"><a class="sidebar-link text-muted " href="#" data-bs-target="#formsDropdown" role="button" aria-expanded="false" data-bs-toggle="collapse">
                       <svg class="svg-icon svg-icon-md me-3">
                         <use xlink:href="icons/orion-svg-sprite.svg#file-storage-1"> </use>
                       </svg><span class="sidebar-link-title">Forms </span></a>
@@ -215,7 +213,7 @@ require_once("../controllers/database/connection.php");
                   <li class="sidebar-list-item"><a class="sidebar-link text-muted" href="forms-validation.html">Validation</a></li>
                 </ul>
               </li>
-              <li class="sidebar-list-item"><a class="sidebar-link text-muted " href="#" data-bs-target="#tablesDropdown" role="button" aria-expanded="false" data-bs-toggle="collapse"> 
+              <li class="sidebar-list-item"><a class="sidebar-link text-muted " href="#" data-bs-target="#tablesDropdown" role="button" aria-expanded="false" data-bs-toggle="collapse">
                       <svg class="svg-icon svg-icon-md me-3">
                         <use xlink:href="icons/orion-svg-sprite.svg#grid-1"> </use>
                       </svg><span class="sidebar-link-title">Tables </span></a>
@@ -227,32 +225,32 @@ require_once("../controllers/database/connection.php");
         </ul>
         <h6 class="sidebar-heading">Docs</h6>
         <ul class="list-unstyled">
-              <li class="sidebar-list-item"><a class="sidebar-link text-muted" href="docs/introduction.html">
+              <li class="sidebar-list-item"><a class="sidebar-link text-muted" href="../docs/introduction.html">
                       <svg class="svg-icon svg-icon-md me-3">
                         <use xlink:href="icons/orion-svg-sprite.svg#angle-brackets-1"> </use>
                       </svg><span class="sidebar-link-title">Introduction</span></a></li>
-              <li class="sidebar-list-item"><a class="sidebar-link text-muted" href="docs/directory-structure.html">
+              <li class="sidebar-list-item"><a class="sidebar-link text-muted" href="../docs/directory-structure.html">
                       <svg class="svg-icon svg-icon-md me-3">
                         <use xlink:href="icons/orion-svg-sprite.svg#table-content-1"> </use>
                       </svg><span class="sidebar-link-title">Directory structure</span></a></li>
-              <li class="sidebar-list-item"><a class="sidebar-link text-muted" href="docs/gulp.html">
+              <li class="sidebar-list-item"><a class="sidebar-link text-muted" href="../docs/gulp.html">
                       <svg class="svg-icon svg-icon-md me-3">
                         <use xlink:href="icons/orion-svg-sprite.svg#keyboard-1"> </use>
                       </svg><span class="sidebar-link-title">Gulp.js</span></a></li>
-              <li class="sidebar-list-item"><a class="sidebar-link text-muted " href="#" data-bs-target="#cssDropdown" role="button" aria-expanded="false" data-bs-toggle="collapse"> 
+              <li class="sidebar-list-item"><a class="sidebar-link text-muted " href="#" data-bs-target="#cssDropdown" role="button" aria-expanded="false" data-bs-toggle="collapse">
                       <svg class="svg-icon svg-icon-md me-3">
                         <use xlink:href="icons/orion-svg-sprite.svg#design-1"> </use>
                       </svg><span class="sidebar-link-title">CSS </span></a>
                 <ul class="sidebar-menu list-unstyled collapse " id="cssDropdown">
-                  <li class="sidebar-list-item"><a class="sidebar-link text-muted" href="docs/components-theme.html">CSS Components</a></li>
-                  <li class="sidebar-list-item"><a class="sidebar-link text-muted" href="docs/customizing-css.html">Customizing CSS</a></li>
+                  <li class="sidebar-list-item"><a class="sidebar-link text-muted" href="../docs/components-theme.html">CSS Components</a></li>
+                  <li class="sidebar-list-item"><a class="sidebar-link text-muted" href="../docs/customizing-css.html">Customizing CSS</a></li>
                 </ul>
               </li>
-              <li class="sidebar-list-item"><a class="sidebar-link text-muted" href="docs/credits.html">
+              <li class="sidebar-list-item"><a class="sidebar-link text-muted" href="../docs/credits.html">
                       <svg class="svg-icon svg-icon-md me-3">
                         <use xlink:href="icons/orion-svg-sprite.svg#star-medal-1"> </use>
                       </svg><span class="sidebar-link-title">Credits</span></a></li>
-              <li class="sidebar-list-item"><a class="sidebar-link text-muted" href="docs/changelog.html">
+              <li class="sidebar-list-item"><a class="sidebar-link text-muted" href="../docs/changelog.html">
                       <svg class="svg-icon svg-icon-md me-3">
                         <use xlink:href="icons/orion-svg-sprite.svg#new-1"> </use>
                       </svg><span class="sidebar-link-title">Changelog</span></a></li>
@@ -263,7 +261,7 @@ require_once("../controllers/database/connection.php");
               <!-- Breadcrumbs -->
               <div class="page-breadcrumb">
                 <ul class="breadcrumb">
-                  <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                  <li class="breadcrumb-item"><a href="../index.html">Home</a></li>
                   <li class="breadcrumb-item"><a href="e-commerce-products.html">Products</a></li>
                   <li class="breadcrumb-item active">Add a Product     </li>
                 </ul>
@@ -271,7 +269,7 @@ require_once("../controllers/database/connection.php");
           <!-- Page Header-->
           <div class="page-header">
             <h1 class="page-heading">Add a new product</h1>
-           
+
           </div>
           <section>
             <div class="row mb-5">
@@ -286,19 +284,23 @@ require_once("../controllers/database/connection.php");
                     <input class="form-control mb-4" id="productName" name="productName" type="text">
                  <label class="form-label" for="postTitle">Product Description</label>
                     <input class="form-control mb-4" id="productDesc" name="productDesc" type="text">
-                         
+
 
                                  <label class="form-label" for="postTitle">Product Category</label>
                          <select style="width: 250px; height:30px; margin: 2%">
                           <option disabled selected>-- Select Category --</option>
 
                              <?php
-                               $result = mysqli_query($conn, "SELECT * From categories");  // Use select query here 
+                               $conn = openCon();
+
+                               $result = mysqli_query($conn, "SELECT * From categories");  // Use select query here
                                while($row = mysqli_fetch_array($result))
                                {
                                   echo "<option value='". $row['id'] ."'>" .$row['name'] ."</option>";  // displaying data in option menu
-                               } 
-                              ?>  
+                               }
+
+                               closeCon($conn);
+                              ?>
                              </select>
 
 
@@ -309,9 +311,9 @@ require_once("../controllers/database/connection.php");
                   <div class="card-header">
                     <div class="card-heading">Prices & Stock                 </div>
                   </div>
-                  <div class="card-body">                                   
+                  <div class="card-body">
                     <div class="row gy-3">
-                      <div class="col-12"> 
+                      <div class="col-12">
                         <label class="form-label fw-bold">Main Price</label>
                         <div class="input-group">
                           <div class="input-group-text">$</div>
@@ -340,7 +342,7 @@ require_once("../controllers/database/connection.php");
                   <div class="card-header">
                     <div class="card-heading">Images                    </div>
                   </div>
-                  <div class="card-body">                                   
+                  <div class="card-body">
                     <form class="dropzone bg-gray-100 rounded-4" id="demo-upload" action="insert-media.php" method="">
                       <div class="dz-message">
                         <p>Drop files here or click to upload.</p>
@@ -397,7 +399,7 @@ require_once("../controllers/database/connection.php");
       'left-trim': true,
       'right-trim': true,
       });
-          
+
     </script>
     <!-- FontAwesome CSS - loading as last, so it doesn't block rendering-->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
