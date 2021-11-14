@@ -30,9 +30,21 @@ require_once("../controllers/database/connection.php");
     <!-- Custom stylesheet - for your changes-->
     <link rel="stylesheet" href="../css/back/custom.css">
     <!-- Favicon-->
-    <link rel="shortcut icon" href="../img/back/favicon.png">
+    <link rel="shortcut icon" href="../img/back/logo.png">
   </head>
   <body>
+      
+      <?php
+		  if(isset($_GET["success"])) {
+			  echo "<p style='text-align:center;color:green;font-weight:bold;font-size:20px;'>Successful insertion</p>";
+		  }
+		  
+		  if(isset($_GET["error"]) && $_GET["error"]==1) {
+			  echo "<p style='text-align:center;color:red;font-weight:bold;font-size:20px;'>product already exists.</p>";
+		  }
+		?>
+      
+      
     <!-- navbar-->
     <header class="header">
       <nav class="navbar navbar-expand-lg px-4 py-2 bg-white shadow"><a class="sidebar-toggler text-gray-500 me-4 me-lg-5 lead" href="#"><i class="fas fa-align-left"></i></a><a class="navbar-brand fw-bold text-uppercase text-base" href="../index.html"><span class="d-none d-brand-partial">Condor </span></a>
@@ -257,7 +269,11 @@ require_once("../controllers/database/connection.php");
         </ul>
       </div>
       <div class="page-holder bg-gray-100">
+       
         <div class="container-fluid px-lg-4 px-xl-5">
+            <!-- here begins the main form-->
+               <form id="productInfo" action="insert-product-inter.php" method="post" >
+                   
               <!-- Breadcrumbs -->
               <div class="page-breadcrumb">
                 <ul class="breadcrumb">
@@ -278,7 +294,7 @@ require_once("../controllers/database/connection.php");
                   <div class="card-header">
                     <div class="card-heading">Main Info</div>
                   </div>
-                  <form  id="productInfo" method="" action="" >
+                
                   <div class="card-body">
                     <label class="form-label" for="postTitle">Product Name</label>
                     <input class="form-control mb-4" id="productName" name="productName" type="text">
@@ -296,7 +312,7 @@ require_once("../controllers/database/connection.php");
                                $result = mysqli_query($conn, "SELECT * From categories");  // Use select query here
                                while($row = mysqli_fetch_array($result))
                                {
-                                  echo "<option value='". $row['id'] ."'>" .$row['name'] ."</option>";  // displaying data in option menu
+                                  echo "<option name='productCat' value='". $row['id'] ."'>" .$row['name'] ."</option>";  // displaying data in option menu
                                }
 
                                closeCon($conn);
@@ -334,26 +350,32 @@ require_once("../controllers/database/connection.php");
                     </div>
                     <hr class="bg-gray-500 my-4">
                     <label class="form-label fw-bold">Quantity in stock</label>
-                    <input class="form-control">
+                    <input class="form-control" name='productQuantity'>
                   </div>
                 </div>
-                </form>
+             
                 <div class="card mb-4">
                   <div class="card-header">
                     <div class="card-heading">Images                    </div>
                   </div>
                   <div class="card-body">
-                    <form class="dropzone bg-gray-100 rounded-4" id="demo-upload" action="insert-media.php" method="">
+                    <div class="dropzone bg-gray-100 rounded-4" id="demo-upload" action="#">
                       <div class="dz-message">
                         <p>Drop files here or click to upload.</p>
+                   
                       </div>
-                    </form>
+                    </div>
+
                   </div>
                 </div>
               </div>
             </div>
           </section>
+                    <input type="submit" value="Submit" name="submit">
+                       </form>
         </div>
+      
+    
         <footer class="footer bg-white shadow align-self-end py-3 px-xl-5 w-100">
           <div class="container-fluid">
             <div class="row">
@@ -382,6 +404,7 @@ require_once("../controllers/database/connection.php");
     <script src="../vendor/back/glightbox/js/glightbox.min.js">    </script>
     <!-- Dropzone.js-->
     <script src="../vendor/back/dropzone/dropzone.js">   </script>
+
     <!-- Add New Product JS-->
     <script src="../js/back/e-commerce-product-new.js">   </script>
     <!-- Main Theme JS File-->
