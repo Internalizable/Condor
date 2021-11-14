@@ -11,34 +11,34 @@
         $product_quantity=$_POST['productQuantity'];
         $product_category=$_POST['productCat'];
 		$productCheck = mysqli_query($conn,"Select name from products WHERE name='$product_name';");
-        
+
 		if(mysqli_num_rows($productCheck)>0){
 			header("Location:e-commerce-product-new.php?error=1");
 		}
-		else 
+		else
         {
-		
-			
-			mysqli_query($conn, "INSERT INTO products(name, price, desc, quantity, salePercentage) VALUES('$product_name', '$product_main_price', '$product_desc', '$product_quantity', '$product_percentage');"
+
+
+			mysqli_query($conn, "INSERT INTO products(id, name, price, desc, quantity, salePercentage) VALUES(0, '$product_name', '$product_main_price', '$product_desc', '$product_quantity', '$product_percentage');"
 			);
            // $product_id=mysqli_insert_id($conn);
-           /* mysqli_query($conn,"INSERT INTO products_categories (products_id, categories_id) 
+           /* mysqli_query($conn,"INSERT INTO products_categories (products_id, categories_id)
             VALUES ('$product_id', '$product_category');");*/
-            
+
 			closeCon($conn);
-            
-				header("Location:e-commerce-product-new.php?success");
-	
-			
+
+            header("Location:e-commerce-product-new.php?success");
+
+
         }
-     
+
 	}
 
 else {
 		header("Location:e-commerce-product-new.php");
 	}
 
-	
-	
+
+
 
 ?>
