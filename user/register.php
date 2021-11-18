@@ -2,7 +2,7 @@
 session_start();
 
     if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true) {
-        header("location: index.php");
+        header("location: ../index.php");
         exit;
     }
 ?>
@@ -19,14 +19,14 @@ session_start();
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&amp;display=swap" rel="stylesheet">
     <!-- Prism Syntax Highlighting-->
-    <link rel="stylesheet" href="vendor/back/prismjs/plugins/toolbar/prism-toolbar.css">
-    <link rel="stylesheet" href="vendor/back/prismjs/themes/prism-okaidia.css">
+    <link rel="stylesheet" href="../vendor/back/prismjs/plugins/toolbar/prism-toolbar.css">
+    <link rel="stylesheet" href="../vendor/back/prismjs/themes/prism-okaidia.css">
     <!-- The Main Theme stylesheet (Contains also Bootstrap CSS)-->
-    <link rel="stylesheet" href="css/back/style.default.css" id="theme-stylesheet">
+    <link rel="stylesheet" href="../css/back/style.default.css" id="theme-stylesheet">
     <!-- Custom stylesheet - for your changes-->
-    <link rel="stylesheet" href="css/back/custom.css">
+    <link rel="stylesheet" href="../css/back/custom.css">
     <!-- Favicon-->
-    <link rel="shortcut icon" href="img/back/favicon.png">
+    <link rel="shortcut icon" href="../img/back/favicon.png">
     <!-- Captcha Script -->
     <script src="https://www.google.com/recaptcha/api.js?render=6LeWZNocAAAAANfVdnLWMk38kUMamH2l1zHIzkhv"></script>
   </head>
@@ -35,7 +35,7 @@ session_start();
       <div class="row gx-0 min-vh-100">
         <div class="col-md-9 col-lg-6 col-xl-4 px-5 d-flex align-items-center shadow">
           <div class="w-100 py-5">
-            <div class="text-center"><img class="img-fluid mb-4" src="img/back/brand/brand-1.svg" alt="..." style="max-width: 6rem;">
+            <div class="text-center"><img class="img-fluid mb-4" src="../img/back/brand/brand-1.svg" alt="..." style="max-width: 6rem;">
               <h1 class="h4 text-uppercase mb-3">Register</h1>
             </div>
             <p class="text-muted text-sm mb-4">The bedding was hardly able to cover it and seemed ready to slide off any moment. His many legs, pitifully thin compared with the size of the rest of him, waved about helplessly as he looked. &quot;What's happened to me?&quot; he thought. It wasn't a dream.</p>
@@ -359,25 +359,25 @@ session_start();
         </div>
         <div class="col-md-3 col-lg-6 col-xl-8 d-none d-md-block">
           <!-- Image-->
-          <div class="bg-cover h-100 me-n3" style="background-image: url(img/back/photos/victor-ene-1301123-unsplash.jpg);"></div>
+          <div class="bg-cover h-100 me-n3" style="background-image: url(../img/back/photos/victor-ene-1301123-unsplash.jpg);"></div>
         </div>
       </div>
     </div>
 
     <div class="modal"><!-- Place at bottom of page --></div>
     <!-- JavaScript files-->
-    <script src="vendor/back/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../vendor/back/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
     <!-- Main Theme JS File-->
-    <script src="js/back/theme.js"></script>
+    <script src="../js/back/theme.js"></script>
     <!-- Form Validation JS -->
-    <script src="js/back/forms-validation.js"></script>
+    <script src="../js/back/forms-validation.js"></script>
     <!-- Prism for syntax highlighting-->
-    <script src="vendor/back/prismjs/prism.js"></script>
-    <script src="vendor/back/prismjs/plugins/normalize-whitespace/prism-normalize-whitespace.min.js"></script>
-    <script src="vendor/back/prismjs/plugins/toolbar/prism-toolbar.min.js"></script>
-    <script src="vendor/back/prismjs/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
-    <script src="vendor/front/jquery/jquery.js"></script>
+    <script src="../vendor/back/prismjs/prism.js"></script>
+    <script src="../vendor/back/prismjs/plugins/normalize-whitespace/prism-normalize-whitespace.min.js"></script>
+    <script src="../vendor/back/prismjs/plugins/toolbar/prism-toolbar.min.js"></script>
+    <script src="../vendor/back/prismjs/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+    <script src="../vendor/front/jquery/jquery.js"></script>
     <script type="text/javascript">
       // Optional
       Prism.plugins.NormalizeWhitespace.setDefaults({
@@ -406,7 +406,7 @@ session_start();
                             $('#registerForm').prepend('<input type="hidden" name="action" value="register">');
 
                             $.ajax({
-                                url: "controllers/register.php",
+                                url: "../controllers/register.php",
                                 type: "POST",
                                 data: {
                                     'fname': $('#fname').val(),
@@ -427,7 +427,7 @@ session_start();
 
                                     console.log(dataResult);
                                     if(dataResult.success) {
-                                        alert('nigger just registered');
+                                        window.location.replace("../index.php");
                                     } else {
                                         $('input[name=' + dataResult.name + ']').addClass('is-invalid');
                                         $('input[name=' + dataResult.name + ']').next().next().html(dataResult.message);

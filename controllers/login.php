@@ -40,7 +40,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                     $_SESSION['verified'] = boolval($row["verified"]);
                     $_SESSION['id'] = $row["id"];
 
-                    header("location: index.php");
                 } else {
                     $data['success'] = false;
                     $data['name'] = 'password';

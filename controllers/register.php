@@ -152,8 +152,8 @@ function sendEmail($email, $userId, $verifCode) {
     $mail->SMTPSecure = 'tls';
     $mail->Port = 587;
 
-    $mail->setFrom('sender@codexworld.com', 'CodexWorld');
-    $mail->addReplyTo('reply@codexworld.com', 'CodexWorld');
+    $mail->setFrom('sender@condor.net', 'Condor');
+    $mail->addReplyTo('reply@condor.net', 'Condor');
 
     $mail->addAddress($email);
 

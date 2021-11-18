@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-include ('controllers/database/connection.php');
+include('../controllers/database/connection.php');
 
 if(isset($_GET['id']) && isset($_GET['code']) && !empty($_GET['id']) && !empty($_GET['code'])) {
     if(isset($_SESSION['verified']) && $_SESSION['verified'] === false) {
