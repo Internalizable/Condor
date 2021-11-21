@@ -33,18 +33,22 @@ require_once("../controllers/database/connection.php");
     <link rel="shortcut icon" href="../img/back/logo.png">
   </head>
   <body>
-      
+
       <?php
 		  if(isset($_GET["success"])) {
 			  echo "<p style='text-align:center;color:green;font-weight:bold;font-size:20px;'>Successful insertion</p>";
 		  }
-		  
+
 		  if(isset($_GET["error"]) && $_GET["error"]==1) {
 			  echo "<p style='text-align:center;color:red;font-weight:bold;font-size:20px;'>product already exists.</p>";
 		  }
+
+           if(isset($_GET["errorImage"]) && $_GET["errorImage"]==1) {
+			  echo "<p style='text-align:center;color:red;font-weight:bold;font-size:20px;'>error in image upload</p>";
+		  }
 		?>
-      
-      
+
+
     <!-- navbar-->
     <header class="header">
       <nav class="navbar navbar-expand-lg px-4 py-2 bg-white shadow"><a class="sidebar-toggler text-gray-500 me-4 me-lg-5 lead" href="#"><i class="fas fa-align-left"></i></a><a class="navbar-brand fw-bold text-uppercase text-base" href="../index.html"><span class="d-none d-brand-partial">Condor </span></a>
@@ -269,11 +273,11 @@ require_once("../controllers/database/connection.php");
         </ul>
       </div>
       <div class="page-holder bg-gray-100">
-       
+
         <div class="container-fluid px-lg-4 px-xl-5">
             <!-- here begins the main form-->
                <form id="productInfo" action="insert-product-inter.php" method="post"  enctype="multipart/form-data" >
-                   
+
               <!-- Breadcrumbs -->
               <div class="page-breadcrumb">
                 <ul class="breadcrumb">
@@ -294,16 +298,20 @@ require_once("../controllers/database/connection.php");
                   <div class="card-header">
                     <div class="card-heading">Main Info</div>
                   </div>
-                
+
                   <div class="card-body">
                     <label class="form-label" for="postTitle">Product Name</label>
-                    <input class="form-control mb-4" id="productName" name="productName" type="text">
-                 <label class="form-label" for="postTitle">Product Description</label>
-                    <input class="form-control mb-4" id="productDesc" name="productDesc" type="text">
+                    <input class="form-control mb-4" id="productName" name="productName" type="text" required>
+
+                    <label class="form-label" for="postTitle">Product Description</label>
+                    <input class="form-control mb-4" id="productDesc" name="productDesc" type="text" required>
+
+                    <label class="form-label" for="postTitle">Product Tags</label>
+                    <input class="form-control mb-4" id="productTags" name="productTags" type="text" required>
 
 
                                  <label class="form-label" for="postTitle">Product Category</label>
-                         <select style="width: 250px; height:30px; margin: 2%">
+                         <select name='productCat' style="width: 250px; height:30px; margin: 2%">
                           <option disabled selected>-- Select Category --</option>
 
                              <?php
@@ -312,7 +320,7 @@ require_once("../controllers/database/connection.php");
                                $result = mysqli_query($conn, "SELECT * From categories");  // Use select query here
                                while($row = mysqli_fetch_array($result))
                                {
-                                  echo "<option name='productCat' value='". $row['id'] ."'>" .$row['name'] ."</option>";  // displaying data in option menu
+                                  echo "<option  value='". $row['id'] ."'>" .$row['name'] ."</option>";  // displaying data in option menu
                                }
 
                                closeCon($conn);
@@ -333,7 +341,7 @@ require_once("../controllers/database/connection.php");
                         <label class="form-label fw-bold">Main Price</label>
                         <div class="input-group">
                           <div class="input-group-text">$</div>
-                          <input class="form-control" name="productMainPrice">
+                          <input class="form-control" name="productMainPrice" required>
                         </div>
                       </div>
                       <div class="col-12 col-lg-6 text-sm">
@@ -350,20 +358,20 @@ require_once("../controllers/database/connection.php");
                     </div>
                     <hr class="bg-gray-500 my-4">
                     <label class="form-label fw-bold">Quantity in stock</label>
-                    <input class="form-control" name='productQuantity'>
+                    <input class="form-control" name='productQuantity' required>
                   </div>
                 </div>
-             
+
                 <div class="card mb-4">
                   <div class="card-header">
                     <div class="card-heading">Images                    </div>
                   </div>
                   <div class="card-body">
-                    <div class="dropzone bg-gray-100 rounded-4" id="demo-upload" action="#">
-                      <div class="dz-message">
-                        <p>Drop files here or click to upload.</p>
-                   
-                      </div>
+                      
+                    <div class="bg-gray-100 rounded-4" id="demo-upload" action="#">
+
+                    <input name="productImg[]" id="chooseFile" type="file" multiple />
+
                     </div>
 
                   </div>
@@ -374,8 +382,8 @@ require_once("../controllers/database/connection.php");
                     <input type="submit" value="Submit" name="submit">
                        </form>
         </div>
-      
-    
+
+
         <footer class="footer bg-white shadow align-self-end py-3 px-xl-5 w-100">
           <div class="container-fluid">
             <div class="row">
