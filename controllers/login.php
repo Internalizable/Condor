@@ -1,24 +1,15 @@
 <?php
-
-session_start();
-
-if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
-    header("location: index.php");
-    exit;
-}
-
 include ('database/connection.php');
 
-$username = "";
-$password = "";
+session_start();
 
 if($_SERVER["REQUEST_METHOD"] == "POST"){
 
     $data = array();
     $conn = openCon();
 
-    $username = testInput(mysqli_real_escape_string($conn, $_POST['username']));
-    $password = testInput(mysqli_real_escape_string($conn, $_POST['password']));
+    $username = testInput($_POST['username'], $conn);
+    $password = testInput($_POST['password'], $conn);
 
     if(empty($username)) {
         $data['success'] = false;
@@ -29,68 +20,49 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         $data['name'] = 'password';
         $data['message'] = 'Password cannot be empty.';
     } else {
-        $sql = "SELECT id, username, password FROM users WHERE username = ?";
-    }
+        $duplicate = mysqli_query($conn, "SELECT id, username, pwd, verified, admin FROM USERS WHERE username='$username'");
 
-    // Check if password is empty
-    if(empty(trim($_POST["password"]))){
-        $password_err = "Please enter your password.";
-    } else{
-        $password = trim($_POST["password"]);
-    }
+        if (mysqli_num_rows($duplicate) == 1) {
+            while ($row = mysqli_fetch_array($duplicate)) {
+                $password = md5($password);
+                $password = sha1($password);
+                $salt = "ka12n3cma993834canzk4la";
 
-    // Validate credentials
-    if(empty($username_err) && empty($password_err)){
-        // Prepare a select statement
+                $password = crypt($password,$salt);
 
+                $data['oldpass'] = $password;
+                $data['newpass'] = $row["pwd"];
 
-        if($stmt = mysqli_prepare($conn, $sql)) {
-            // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "s", $param_username);
+                if($password == $row["pwd"]) {
+                    $data['success'] = true;
 
-            // Set parameters
-            $param_username = $username;
+                    $_SESSION['loggedin'] = true;
+                    $_SESSION['verified'] = boolval($row["verified"]);
+                    $_SESSION['id'] = $row["id"];
+                    $_SESSION['admin'] = boolval($row['admin']);
 
-            // Attempt to execute the prepared statement
-            if(mysqli_stmt_execute($stmt)){
-                // Store result
-                mysqli_stmt_store_result($stmt);
-
-                // Check if username exists, if yes then verify password
-                if(mysqli_stmt_num_rows($stmt) == 1){
-                    // Bind result variables
-                    mysqli_stmt_bind_result($stmt, $id, $username, $hashed_password);
-                    if(mysqli_stmt_fetch($stmt)){
-                        if(password_verify($password, $hashed_password)){
-                            // Password is correct, so start a new session
-                            session_start();
-
-                            // Store data in session variables
-                            $_SESSION["loggedin"] = true;
-                            $_SESSION["id"] = $id;
-                            $_SESSION["username"] = $username;
-
-                            // Redirect user to welcome page
-                            header("location: welcome.php");
-                        } else{
-                            // Password is not valid, display a generic error message
-                            $login_err = "Invalid username or password.";
-                        }
-                    }
-                } else{
-                    // Username doesn't exist, display a generic error message
-                    $login_err = "Invalid username or password.";
+                } else {
+                    $data['success'] = false;
+                    $data['name'] = 'password';
+                    $data['message'] = 'Password is invalid';
                 }
-            } else{
-                echo "Oops! Something went wrong. Please try again later.";
             }
-
-            // Close statement
-            mysqli_stmt_close($stmt);
+        } else {
+            $data['success'] = false;
+            $data['name'] = 'username';
+            $data['message'] = 'Username is invalid';
         }
     }
 
-    // Close connection
     closeCon($conn);
+    echo json_encode($data);
+}
+
+function testInput($data, $conn) {
+    $data = trim($data);
+    $data = stripslashes($data);
+    $data = htmlspecialchars($data);
+
+    return mysqli_real_escape_string($conn, $data);
 }
 ?>

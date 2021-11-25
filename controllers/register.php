@@ -3,34 +3,31 @@
 include ('database/connection.php');
 require_once 'captcha/autoload.php';
 
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+require 'mailer/Exception.php';
+require 'mailer/PHPMailer.php';
+require 'mailer/SMTP.php';
+
 define("RECAPTCHA_V3_SECRET_KEY", '6LeWZNocAAAAAHTc8R3IH_NN28nmq20sdIsYd2vW');
 
-//session_start();
-
-$fname = "";
-$lname = "";
-$username = "";
-$city = "";
-$country = "";
-$zip = "";
-$email = "";
-$password = "";
-$confirmPassword = "";
+session_start();
 
 if($_SERVER["REQUEST_METHOD"] == "POST") {
     $data = array();
 
     $conn = openCon();
 
-    $fname = testInput(mysqli_real_escape_string($conn, $_POST['fname']));
-    $lname = testInput(mysqli_real_escape_string($conn, $_POST['lname']));
-    $username = testInput(mysqli_real_escape_string($conn, $_POST['username']));
-    $city = testInput(mysqli_real_escape_string($conn, $_POST['city']));
-    $country = testInput(mysqli_real_escape_string($conn, $_POST['country']));
-    $zip = testInput(mysqli_real_escape_string($conn, $_POST['zip']));
-    $email = testInput(mysqli_real_escape_string($conn, $_POST['email']));
-    $password = testInput(mysqli_real_escape_string($conn, $_POST['password']));
-    $confirmPassword = testInput(mysqli_real_escape_string($conn, $_POST['confirmPassword']));
+    $fname = testInput($_POST['fname'], $conn);
+    $lname = testInput($_POST['lname'], $conn);
+    $username = testInput($_POST['username'], $conn);
+    $city = testInput($_POST['city'], $conn);
+    $country = testInput($_POST['country'], $conn);
+    $zip = testInput($_POST['zip'], $conn);
+    $email = testInput($_POST['email'], $conn);
+    $password = testInput($_POST['password'], $conn);
+    $confirmPassword = testInput($_POST['confirmPassword'], $conn);
 
     $token = $_POST['token'];
     $action = $_POST['action'];
@@ -101,10 +98,40 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                     $data['name'] = 'email';
                     $data['message'] = 'Email already exists!';
                 } else {
-                    $sql = "INSERT INTO USERS VALUES (0, '$username','$email','$password','$fname','$lname','$city','$country','$zip');";
+
+                    $isAdmin = mysqli_query($conn, "SELECT COUNT(*) AS userCount FROM USERS;");
+
+                    $userBit = 0;
+
+                    if ($row = mysqli_fetch_array($isAdmin))
+                        if($row['userCount'] == 0)
+                            $userBit = 1;
+
+                    $verifCode = substr(md5(mt_rand()),0,15);
+
+                    $password = md5($password);
+                    $password = sha1($password);
+                    $salt = "ka12n3cma993834canzk4la";
+
+                    $password = crypt($password,$salt);
+                    $currentDate = date('Y-m-d');
+
+                    $sql = "INSERT INTO USERS VALUES (0, '$username','$email','$password','$fname','$lname', 'I am new here!', '$city','$country','$zip', '$verifCode', 0, NULL, NULL, 'img/avatars/default.png', 'img/banners/default.png', '$userBit', '$currentDate');";
 
                     if (mysqli_query($conn, $sql)) {
+                        $userId = mysqli_insert_id($conn);
+
+                        $currentTime = date("Y-m-d H:i:s");
+
+                        $insertToTimeline = mysqli_query($conn, "INSERT INTO users_timeline VALUES('$userId', 'I just registered to Condor! Hello world!', '$currentTime');");
+
                         $data['success'] = true;
+                        $_SESSION['loggedin'] = true;
+                        $_SESSION['verified'] = false;
+                        $_SESSION['id'] = $userId;
+                        $_SESSION['admin'] = boolval($userBit);
+
+                        sendEmail($email, $userId, $verifCode);
                     }
                 }
             }
@@ -119,10 +146,37 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     echo json_encode($data);
 }
 
-function testInput($data) {
+function testInput($data, $conn) {
     $data = trim($data);
     $data = stripslashes($data);
     $data = htmlspecialchars($data);
-    return $data;
+
+    return mysqli_real_escape_string($conn, $data);
+}
+
+function sendEmail($email, $userId, $verifCode) {
+    $mail = new PHPMailer;
+
+    $mail->isSMTP();
+    $mail->Host = 'smtp.gmail.com';
+    $mail->SMTPAuth = true;
+    $mail->Username = 'econdor.webdev@gmail.com';
+    $mail->Password = 'webdev123$';
+    $mail->SMTPSecure = 'tls';
+    $mail->Port = 587;
+
+    $mail->setFrom('sender@condor.net', 'Condor');
+    $mail->addReplyTo('reply@condor.net', 'Condor');
+
+    $mail->addAddress($email);
+
+    $mail->isHTML(true);
+
+    $mail->Subject = 'Activation Code for Condor';
+
+    $bodyContent = '<p>Your activation code is '.$verifCode.' <br><br> Please click on the following <a href="http://localhost/condor/verification?id=' . $userId . '&code=' . $verifCode . '"> link </a> to activate your account.</p>';
+    $mail->Body = $bodyContent;
+
+    $mail->send();
 }
 ?>
