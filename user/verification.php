@@ -7,18 +7,22 @@ if(isset($_GET['id']) && isset($_GET['code']) && !empty($_GET['id']) && !empty($
     if(isset($_SESSION['verified']) && $_SESSION['verified'] === false) {
         $conn = openCon();
 
-        $sql = "SELECT verifCode FROM USERS WHERE id=" . $_GET['id'] . ";";
+        $userId = $_GET['id'];
+        $sql = "SELECT verifCode FROM USERS WHERE id=" . $userId . ";";
         $query = mysqli_query($conn, $sql);
 
         while($row= mysqli_fetch_array($query)){
 	       if($row['verifCode'] == $_GET['code']) {
 
-               $updateSQL = "UPDATE USERS SET verified=1 WHERE id=" . $_GET['id'] . ";";
+               $updateSQL = "UPDATE USERS SET verified=1 WHERE id=" . $userId . ";";
                mysqli_query($conn, $updateSQL);
+
+               $currentTime = date("Y-m-d H:i:s");
+               $insertToTimeline = mysqli_query($conn, "INSERT INTO users_timeline VALUES('$userId', 'I just verified my account through my email! :)', '$currentTime');");
 
                $_SESSION['verified'] = true;
 
-               header('location: index.php');
+               header('location: ../');
                return;
            }
         }
@@ -26,6 +30,6 @@ if(isset($_GET['id']) && isset($_GET['code']) && !empty($_GET['id']) && !empty($
         closeCon($conn);
     }
 }
-header('location: error.php');
+header('location: ../error.php?code=404');
 exit;
 ?>

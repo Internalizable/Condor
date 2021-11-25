@@ -20,7 +20,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         $data['name'] = 'password';
         $data['message'] = 'Password cannot be empty.';
     } else {
-        $duplicate = mysqli_query($conn, "SELECT id, username, pwd, verified FROM USERS WHERE username='$username'");
+        $duplicate = mysqli_query($conn, "SELECT id, username, pwd, verified, admin FROM USERS WHERE username='$username'");
 
         if (mysqli_num_rows($duplicate) == 1) {
             while ($row = mysqli_fetch_array($duplicate)) {
@@ -39,6 +39,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                     $_SESSION['loggedin'] = true;
                     $_SESSION['verified'] = boolval($row["verified"]);
                     $_SESSION['id'] = $row["id"];
+                    $_SESSION['admin'] = boolval($row['admin']);
 
                 } else {
                     $data['success'] = false;

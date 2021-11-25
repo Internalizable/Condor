@@ -98,25 +98,38 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                     $data['name'] = 'email';
                     $data['message'] = 'Email already exists!';
                 } else {
+
+                    $isAdmin = mysqli_query($conn, "SELECT COUNT(*) AS userCount FROM USERS;");
+
+                    $userBit = 0;
+
+                    if ($row = mysqli_fetch_array($isAdmin))
+                        if($row['userCount'] == 0)
+                            $userBit = 1;
+
                     $verifCode = substr(md5(mt_rand()),0,15);
-                    $defaultPath = "img/avatars/default.png";
 
                     $password = md5($password);
                     $password = sha1($password);
                     $salt = "ka12n3cma993834canzk4la";
 
                     $password = crypt($password,$salt);
+                    $currentDate = date('Y-m-d');
 
-                    $sql = "INSERT INTO USERS VALUES (0, '$username','$email','$password','$fname','$lname','$city','$country','$zip', '$verifCode', 0, '$defaultPath');";
+                    $sql = "INSERT INTO USERS VALUES (0, '$username','$email','$password','$fname','$lname', 'I am new here!', '$city','$country','$zip', '$verifCode', 0, NULL, NULL, 'img/avatars/default.png', 'img/banners/default.png', '$userBit', '$currentDate');";
 
                     if (mysqli_query($conn, $sql)) {
                         $userId = mysqli_insert_id($conn);
 
-                        $data['success'] = true;
+                        $currentTime = date("Y-m-d H:i:s");
 
+                        $insertToTimeline = mysqli_query($conn, "INSERT INTO users_timeline VALUES('$userId', 'I just registered to Condor! Hello world!', '$currentTime');");
+
+                        $data['success'] = true;
                         $_SESSION['loggedin'] = true;
                         $_SESSION['verified'] = false;
                         $_SESSION['id'] = $userId;
+                        $_SESSION['admin'] = boolval($userBit);
 
                         sendEmail($email, $userId, $verifCode);
                     }

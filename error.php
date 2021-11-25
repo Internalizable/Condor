@@ -90,6 +90,9 @@ p {
             case 404:
                 echo 'The requested page could not be found.';
                 break;
+            case 403:
+                echo 'You are not allowed to access this page.';
+                break;
         }
       ?>
   </p>
