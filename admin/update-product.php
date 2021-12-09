@@ -1,7 +1,15 @@
 <?php
 
 require_once("../controllers/database/connection.php");
-
+$con=openCon();
+//$prodID=$_GET[id];
+$result=mysqli_query($con,"select * from products where id=".$_GET["id"]);
+$product = mysqli_fetch_array($result);
+$tags_result=mysqli_query($con,"select * from products_tags where products_id=".$_GET['id']);
+$category_result=mysqli_query($con,"select * from products_categories where products_id=".$_GET['id']);
+$category_row=mysqli_fetch_array($category_result);
+$cat_name=mysqli_query($con,"select * from categories where id=".$category_row["categories_id"]);
+$cat_name_row=mysqli_fetch_array($cat_name);
 ?>
 
 <!DOCTYPE html>
@@ -42,10 +50,16 @@ require_once("../controllers/database/connection.php");
 		  if(isset($_GET["error"]) && $_GET["error"]==1) {
 			  echo "<p style='text-align:center;color:red;font-weight:bold;font-size:20px;'>product already exists.</p>";
 		  }
+      if(isset($_GET["error"]) && $_GET["error"]==2) {
+			  echo "<p style='text-align:center;color:red;font-weight:bold;font-size:20px;'>error.</p>";
+		  }
 
            if(isset($_GET["errorImage"]) && $_GET["errorImage"]==1) {
 			  echo "<p style='text-align:center;color:red;font-weight:bold;font-size:20px;'>error in image upload</p>";
 		  }
+
+   
+      
 		?>
 
 
@@ -276,19 +290,19 @@ require_once("../controllers/database/connection.php");
 
         <div class="container-fluid px-lg-4 px-xl-5">
             <!-- here begins the main form-->
-               <form id="productInfo" action="insert-product-inter.php" method="post"  enctype="multipart/form-data" >
+            <?php echo"<form id='productInfo' action='update-product-inter.php?id=".$product['id']."' method='post'  enctype='multipart/form-data' >"?>
 
               <!-- Breadcrumbs -->
               <div class="page-breadcrumb">
                 <ul class="breadcrumb">
                   <li class="breadcrumb-item"><a href="../index.html">Home</a></li>
                   <li class="breadcrumb-item"><a href="e-commerce-products.html">Products</a></li>
-                  <li class="breadcrumb-item active">Add a Product     </li>
+                  <li class="breadcrumb-item active">Update a Product</li>
                 </ul>
               </div>
           <!-- Page Header-->
           <div class="page-header">
-            <h1 class="page-heading">Add a new product</h1>
+            <h1 class="page-heading">Edit a product</h1>
 
           </div>
           <section>
@@ -300,30 +314,73 @@ require_once("../controllers/database/connection.php");
                   </div>
 
                   <div class="card-body">
+
+               
+                  
+                    <input class="form-control mb-4" id="productId" name="productId" type="text" value="<?php echo $product["id"];?>"  hidden>
+
+
                     <label class="form-label" for="postTitle">Product Name</label>
-                    <input class="form-control mb-4" id="productName" name="productName" type="text" required>
+                    <input class="form-control mb-4" id="productName" name="productName" type="text" value="<?php echo $product["name"];?>"  required>
 
                     <label class="form-label" for="postTitle">Product Description</label>
-                    <input class="form-control mb-4" id="productDesc" name="productDesc" type="text" required>
+                    <input class="form-control mb-4" id="productDesc" name="productDesc" type="text" value="<?php echo $product["description"];?>" required>
 
                     <label class="form-label" for="postTitle">Product Tags</label>
-                    <input class="form-control mb-4" id="productTags" name="productTags" type="text" required>
 
+                    <?php
 
-                                 <label class="form-label" for="postTitle">Product Category</label>
-                         <select name='productCat' style="width: 250px; height:30px; margin: 2%">
-                          <option disabled selected>-- Select Category --</option>
+                    $tags_array="";
+                    while($tags_row=mysqli_fetch_array($tags_result))
+                    {
+                        $tags_array.=$tags_row["tags_tag"].",";
+                    }
+                    $tags_array=substr($tags_array, 0, -1);
+                    echo"<input class='form-control mb-4' id='productTags' name='productTags' type='text' value='".$tags_array."' required>";
 
+                    ?>
+                          <label class="form-label" for="postTitle">Product Category</label>
+                         <select name="productCat" style="width: 250px; height:30px; margin: 2%" >
+
+                         <?php 
+                         /* while($category_row=mysqli_fetch_array($category_result))
+                          {
+                            $cat_name=mysqli_query($con,"select name from categories where id=".$category_row["categories_id"]);
+
+                            while($cat_name_row=mysqli_fetch_array($cat_name))
+                            {
+                              echo"<option  value='".$cat_name_row["name"]."' selected></option>";
+                            }
+                            
+                          }
+                         */
+                          ?>
                              <?php
                                $conn = openCon();
-
-                               $result = mysqli_query($conn, "SELECT * From categories where isDeleted=0");  // Use select query here
+                                $old_cat=mysqli_query($conn, "SELECT categories_id From products_categories where products_id=".$_GET['id']);
+                                $old_cat_row=mysqli_fetch_array($old_cat);
+                               $result = mysqli_query($conn, "SELECT * From categories");  // Use select query here
                                while($row = mysqli_fetch_array($result))
                                {
-                                  echo "<option  value='". $row['id'] ."'>" .$row['name'] ."</option>";  // displaying data in option menu
+                                  echo "<option  value='". $row['id'] ."'";
+                                
+                                  if( $row['id']==$old_cat_row["categories_id"])
+                                  {
+                                    echo" selected ";
+                                  }
+
+                                  if( $row["isDeleted"]== 1)
+                                  {
+                                    echo" disabled ";
+                                  }
+                                  echo ">".$row['name'] ."</option>"; 
+                                
+                                   
+                                  
+                                  
                                }
 
-                               closeCon($conn);
+                           
                               ?>
                              </select>
 
@@ -341,7 +398,7 @@ require_once("../controllers/database/connection.php");
                         <label class="form-label fw-bold">Main Price</label>
                         <div class="input-group">
                           <div class="input-group-text">$</div>
-                          <input class="form-control" name="productMainPrice" required>
+                          <input class="form-control" name="productMainPrice"  value="<?php echo $product["price"];?>" required>
                         </div>
                       </div>
                       <div class="col-12 col-lg-6 text-sm">
@@ -352,13 +409,13 @@ require_once("../controllers/database/connection.php");
                         </div>
                         <div class="input-group">
                           <div class="input-group-text">%                                        </div>
-                          <input class="form-control" name="productPercentage">
+                          <input class="form-control" name="productPercentage" value="<?php echo $product["salePercentage"];?>" required>
                         </div>
                       </div>
                     </div>
                     <hr class="bg-gray-500 my-4">
                     <label class="form-label fw-bold">Quantity in stock</label>
-                    <input class="form-control" name='productQuantity' required>
+                    <input class="form-control" name='productQuantity' value="<?php echo $product["quantity"];?>" required >
                   </div>
                 </div>
 
@@ -436,3 +493,6 @@ require_once("../controllers/database/connection.php");
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
   </body>
 </html>
+<?php 
+closeCon($conn);
+?>

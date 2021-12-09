@@ -269,7 +269,7 @@ echo "</div>";
               <div class="page-breadcrumb">
                 <ul class="breadcrumb">
                   <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-                  <li class="breadcrumb-item active">Cards     </li>
+                  <li class="breadcrumb-item active">Categories     </li>
                 </ul>
               </div>
               <!-- Page Header-->
@@ -300,7 +300,7 @@ echo "</div>";
 
             // for testing purposes
              $image_path='';
-		$result = mysqli_query($conn, "SELECT * FROM categories where parent_id is NULL;");
+		$result = mysqli_query($conn, "SELECT * FROM categories where parent_id is NULL and isDeleted='0';");
 
 		if(mysqli_num_rows($result)==0){
 			echo "No results found";
@@ -316,8 +316,10 @@ else{
                 echo"<b><h6 style='padding:5%;'>" . "Main Category: " ."<br>". $row["name"]. "</h6></b>";
         
                 echo "<div class='card-body'>";
+                echo" <a class='btn btn-primary' href='#'>Edit</a>"." ". "<a class='btn btn-primary' onclick='confirmDelete()'
+                href='delete-category-inter.php?id=".base64_encode($row['id'])."'>Archive</a> <br> <br> <br>";
         
-                $result2=mysqli_query($conn,"select * from categories where parent_id='$parent_category_id';");
+                $result2=mysqli_query($conn,"select * from categories where parent_id='$parent_category_id' and isDeleted=0;");
                
                 while ($row2 = mysqli_fetch_array($result2)){
                 $category_name = $row2['name']; 
@@ -326,7 +328,8 @@ else{
                 "<p class='card-text'></p>";
              
            
-                 echo" <a class='btn btn-primary' href='#'>Edit</a>"." ". "<a class='btn btn-primary' href='#'>Delete</a> <br> <br> <br>";
+                 echo" <a class='btn btn-info' href='update-category.php?id="./*base64_encode(*/$row2['id']/*)*/."'>Edit</a>"." ". "<a class='btn btn-info' onclick='confirmDelete()'
+                 href='delete-category-inter.php?id=".base64_encode($row2['id'])."'>Archive</a> <br> <br> <br>";
         
               
                 }
@@ -369,6 +372,12 @@ else{
       'left-trim': true,
       'right-trim': true,
       });
+
+
+      function confirmDelete() {
+        return confirm("Are you sure you want to archive?");
+
+}
           
     </script>
     <!-- FontAwesome CSS - loading as last, so it doesn't block rendering-->

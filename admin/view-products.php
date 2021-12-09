@@ -300,7 +300,7 @@ echo "</div>";
 
             // for testing purposes
              $image_path='';
-		$result = mysqli_query($conn, "SELECT * FROM products;");
+		$result = mysqli_query($conn, "SELECT * FROM products where isDeleted=0;");
 
 		if(mysqli_num_rows($result)==0){
 			echo "No results found";
@@ -314,7 +314,20 @@ else{
                 $result2=mysqli_query($conn,"select  media_path from products_media where products_id='$product_id'");
                 while ($row2 = mysqli_fetch_array($result2)){
                  $image_path=$row2["media_path"];
+
+                 if(file_exists("../img/back/product/". $image_path))
+                 { 
+                    $image_path=$row2["media_path"];
+                }
+                  else
+                  $image_path= "default.jpg";
+
+                  
                    echo "<img class='card-img-top img-fluid' src='../img/back/product/".$image_path."'"." alt='Card image cap'>";
+
+                   if($image_path== "default.jpg") // to display the default only one time
+                   break;
+                 
                 }
 
                 $product_name = $row["name"]; 
@@ -326,7 +339,9 @@ else{
                "<h5 class='card-title'>".$product_name."</h5>".
                  "<p class='card-text'>". "Description:" .$product_desc. "</p>".
                  "<p class='card-text'>". "Quantity:" . $product_quantity. "</p>".
-               "<p class='card-text'>" . "Price:" . $product_price ."</p>". "<a class='btn btn-primary' href='#'>Edit</a>"." ". "<a class='btn btn-primary' href='#'>Delete</a>".
+               "<p class='card-text'>" . "Price:" . $product_price ."</p>". "<a class='btn btn-primary' href='edit-product-inter.php?id=".base64_encode($product_id)."'>Edit</a>"." ".
+                "<a class='btn btn-primary' onclick='confirmDelete()'
+                 href='delete-product-inter.php?id=".base64_encode($product_id)."'>Delete</a>".
                 "</div>       </div>
               </div>";
         
@@ -369,6 +384,11 @@ else{
       'right-trim': true,
       });
           
+
+      function confirmDelete() {
+        return confirm("Are you sure you want to delete?");
+
+}
     </script>
     <!-- FontAwesome CSS - loading as last, so it doesn't block rendering-->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">

@@ -311,7 +311,7 @@ require_once("../controllers/database/connection.php");
                              <?php
                                $conn = openCon();
 
-                               $result = mysqli_query($conn, "SELECT * From categories");  // Use select query here
+                               $result = mysqli_query($conn, "SELECT * From categories where isDeleted=0");  // Use select query here
                                while($row = mysqli_fetch_array($result))
                                {
                                   echo "<option  value='". $row['id'] ."'>" .$row['name'] ."</option>";  // displaying data in option menu
