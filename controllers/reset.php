@@ -75,7 +75,7 @@ function sendEmail($email, $userId, $resetCode) {
 
     $mail->Subject = 'Reset Code for Condor';
 
-    $bodyContent = '<p>Your reset code for your account is '.$resetCode.' <br><br> Please click on the following <a href="http://localhost/condor/reset?id=' . $userId . '&code=' . $resetCode . '"> link </a> to reset your account\'s password.</p>';
+    $bodyContent = '<p>Your reset code for your account is '.$resetCode.' <br><br> Please click on the following <a href="http://localhost/condor/user/reset?id=' . $userId . '&code=' . $resetCode . '"> link </a> to reset your account\'s password.</p>';
     $mail->Body = $bodyContent;
 
     $mail->send();
