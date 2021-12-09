@@ -20,14 +20,15 @@ if(isset($_POST["submit"]) && isset($_SESSION['id'])){
     $profilePhotoPath = uploadImage("user_photo", $allowedTypes, $allowedExts, "avatars/");
     $bannerPhotoPath = uploadImage("user_cover_photo", $allowedTypes, $allowedExts, "banners/");
 
-    mysqli_query($con, "INSERT INTO media VALUES('$profilePhotoPath');");
-    mysqli_query($con, "INSERT INTO media VALUES('$bannerPhotoPath');");
-
     $query = mysqli_query($con, "SELECT profile_path, banner_path FROM USERS WHERE id='$userId';");
 
     while($row = mysqli_fetch_array($query)) {
-        unlink('../' . $row['profile_path']);
-        unlink('../' . $row['banner_path']);
+
+        if($row['profile_path'] != 'img/avatars/default.png' && $row['banner_path'] != 'img/banners/default.png') {
+            unlink('../' . $row['profile_path']);
+            unlink('../' . $row['banner_path']);
+        }
+
     }
 
     mysqli_query($con, "UPDATE USERS SET firstname='$fname', lastname='$lname', bio='$bio', profile_path='$profilePhotoPath', banner_path='$bannerPhotoPath' WHERE id='$userId';");

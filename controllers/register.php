@@ -174,7 +174,7 @@ function sendEmail($email, $userId, $verifCode) {
 
     $mail->Subject = 'Activation Code for Condor';
 
-    $bodyContent = '<p>Your activation code is '.$verifCode.' <br><br> Please click on the following <a href="http://localhost/condor/verification?id=' . $userId . '&code=' . $verifCode . '"> link </a> to activate your account.</p>';
+    $bodyContent = '<p>Your activation code is '.$verifCode.' <br><br> Please click on the following <a href="http://localhost/condor/user/verification?id=' . $userId . '&code=' . $verifCode . '"> link </a> to activate your account.</p>';
     $mail->Body = $bodyContent;
 
     $mail->send();

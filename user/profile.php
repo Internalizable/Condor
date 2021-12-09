@@ -198,11 +198,11 @@ if(!isset($_GET['id'])) {
                           <button type="submit" name="submit" class="btn btn-primary">Save</button>
                       </div>
                   </form>
-              </div>
 
                 <?php
                     }
                 ?>
+              </div>
               <div class="col-lg-8">
                 <div class="card overflow-hidden mb-4">
                   <?php
@@ -256,7 +256,7 @@ if(!isset($_GET['id'])) {
           <div class="container-fluid">
             <div class="row">
               <div class="col-md-6 text-center text-md-start fw-bold">
-                <p class="mb-2 mb-md-0 fw-bold">Your company &copy; 2021</p>
+                <p class="mb-2 mb-md-0 fw-bold">Condor &copy; 2021</p>
               </div>
               <div class="col-md-6 text-center text-md-end text-gray-400">
                 <p class="mb-0">Version 1.1.0</p>
