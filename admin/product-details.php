@@ -1,6 +1,8 @@
 <?php
 
 require_once("../controllers/database/connection.php");
+$con = openCon();
+$product_id=base64_decode($_GET["id"]);
 
 ?>
 
@@ -276,19 +278,19 @@ require_once("../controllers/database/connection.php");
 
         <div class="container-fluid px-lg-4 px-xl-5">
             <!-- here begins the main form-->
-               <form id="productInfo" action="insert-product-inter.php" method="post"  enctype="multipart/form-data" >
+            
 
               <!-- Breadcrumbs -->
               <div class="page-breadcrumb">
                 <ul class="breadcrumb">
                   <li class="breadcrumb-item"><a href="../index.html">Home</a></li>
                   <li class="breadcrumb-item"><a href="e-commerce-products.html">Products</a></li>
-                  <li class="breadcrumb-item active">Add a Product     </li>
+                  <li class="breadcrumb-item active"> Product Details     </li>
                 </ul>
               </div>
           <!-- Page Header-->
           <div class="page-header">
-            <h1 class="page-heading">Add a new product</h1>
+            <h1 class="page-heading">Product # <?php echo"$product_id"; ?></h1>
 
           </div>
           <section>
@@ -298,89 +300,96 @@ require_once("../controllers/database/connection.php");
                   <div class="card-header">
                     <div class="card-heading">Main Info</div>
                   </div>
-
-                  <div class="card-body">
-                    <label class="form-label" for="postTitle">Product Name</label>
-                    <input class="form-control mb-4" id="productName" name="productName" type="text" required>
-
-                    <label class="form-label" for="postTitle">Product Description</label>
-                    <input class="form-control mb-4" id="productDesc" name="productDesc" type="text" required>
-
-                    <label class="form-label" for="postTitle">Product Tags</label>
-                    <input class="form-control mb-4" id="productTags" name="productTags" type="text" required>
-
-
-                                 <label class="form-label" for="postTitle">Product Category</label>
-                         <select name='productCat' style="width: 250px; height:30px; margin: 2%">
-                          <option disabled selected>-- Select Category --</option>
-
-                             <?php
-                               $conn = openCon();
-
-                               $result = mysqli_query($conn, "SELECT * From categories where isDeleted=0");  // Use select query here
-                               while($row = mysqli_fetch_array($result))
-                               {
-                                  echo "<option  value='". $row['id'] ."'>" .$row['name'] ."</option>";  // displaying data in option menu
-                               }
-
-                               closeCon($conn);
-                              ?>
-                             </select>
-
-
-                  </div>
-                </div>
-
-                <div class="card mb-4">
-                  <div class="card-header">
-                    <div class="card-heading">Prices & Stock                 </div>
-                  </div>
-                  <div class="card-body">
-                    <div class="row gy-3">
-                      <div class="col-12">
-                        <label class="form-label fw-bold">Main Price</label>
-                        <div class="input-group">
-                          <div class="input-group-text">$</div>
-                          <input class="form-control" name="productMainPrice" required>
-                        </div>
-                      </div>
-                      <div class="col-12 col-lg-6 text-sm">
-                        <label class="form-label text-muted">Discount Percentage</label>
-                        <div class="form-check form-switch float-end">
-                          <label class="form-check-label text-sm sr-only" for="displayDiscount">Display Discount percentage</label>
-                          <input class="form-check-input" id="displayRegular" type="checkbox">
-                        </div>
-                        <div class="input-group">
-                          <div class="input-group-text">%                                        </div>
-                          <input class="form-control" name="productPercentage">
-                        </div>
-                      </div>
-                    </div>
-                    <hr class="bg-gray-500 my-4">
-                    <label class="form-label fw-bold">Quantity in stock</label>
-                    <input class="form-control" name='productQuantity' required>
-                  </div>
-                </div>
-
-                <div class="card mb-4">
-                  <div class="card-header">
-                    <div class="card-heading">Images                    </div>
-                  </div>
-                  <div class="card-body">
+                    <?php 
                       
-                    <div class="bg-gray-100 rounded-4" id="demo-upload" action="#">
+                  echo"<div class='card-body'>";
+                  $product_query=mysqli_query($con,"select * from products where id=".$product_id);
+                  while($row=mysqli_fetch_array($product_query))
+                  {
+                    echo"<label class='form-label text-lg' for='postTitle'><strong>Product Name:</strong></label>";
+                    echo str_repeat("&nbsp;", 5);
+                    echo"<label class='form-text text-lg' for='postTitle'>".$row['name'] ."</label>";
+                    echo"<br> <br>";
+                   
+                    echo"<label class='form-label  text-lg' for='postTitle'><strong>Product Description:</strong></label>";
+                    echo str_repeat("&nbsp;", 5);
+                    echo"<label class='form-text text-lg' for='postTitle'>".$row['description']."</label>";
+                    echo"<br> <br>";
 
-                    <input name="productImg[]" id="chooseFile" type="file" multiple />
+                    echo"<label class='form-label  text-lg' for='postTitle'><strong>Product Tags:</strong></label>";
+                    echo str_repeat("&nbsp;", 5);
+                    $tags_query=mysqli_query($con,"select * from products_tags where products_id=".$product_id);
+                    while($row2=mysqli_fetch_array($tags_query))
+                    {
+                    echo"<label class='form-text text-lg' for='postTitle'>" . $row2['tags_tag']."</label>";
+                   
+                    echo str_repeat("&nbsp;", 5);
+                    }
+                    echo"<br> <br>";
+                    echo"<label class='form-label  text-lg' for='postTitle'><strong>Product Category:</strong></label>";
+                    echo str_repeat("&nbsp;", 5);
+                    $category_query=mysqli_query($con,"select * from products_categories where products_id=".$product_id);
+                    while($row3=mysqli_fetch_array($category_query))
+                    {
+                      $category_name=mysqli_query($con,"select * from categories where id=".$row3['categories_id']);
+                      while($row4=mysqli_fetch_array($category_name))
+                      {
+                     echo"<label class='form-text text-lg' for='postTitle'>".$row4['name']."</label>";
+                      }
+                    }
+                    echo"<br> <br>";
+                    echo"<label class='form-label  text-lg' for='postTitle'><strong>Product Main Price:</strong></label>";
+                    echo str_repeat("&nbsp;", 5);
+                    echo"<label class='form-text text-lg' for='postTitle'>" . $row['price']."</label>";
 
-                    </div>
+                    echo"<br> <br>";
+                    echo"<label class='form-label  text-lg' for='postTitle'><strong>Product Discount Percentage:</strong></label>";
+                    echo str_repeat("&nbsp;", 5);
+                    echo"<label class='form-text text-lg' for='postTitle'>" . $row['salePercentage']." %"."</label>";
 
-                  </div>
+                    echo"<br> <br>";
+                    echo"<label class='form-label  text-lg' for='postTitle'><strong>Product Available Stock:</strong></label>";
+                    echo str_repeat("&nbsp;", 5);
+                    echo"<label class='form-text text-lg' for='postTitle'>" . $row['quantity']." pcs"."</label>";
+                    }
+                
+
+                  echo"</div>";
+
+                    
+                  ?>
                 </div>
+
+                <div class="page-header">
+                <h4 class="page-heading">Product Images</h4>
+              </div>
+                <section>
+            <div class="row"> 
+              <?php 
+
+              $image_query=mysqli_query($con,"select * from products_media where products_id=".$product_id);
+              while($row=mysqli_fetch_array($image_query))
+              {
+              echo"<div class='col-6 col-md-4 col-lg-3'>";
+                echo"<div class='card mb-4'><a class='glightbox' href='../img/back/product/".$row['media_path']."'"." data-gallery='gallery' data-title='Image 1'>";
+                echo"<img class='card-img-top' src='../img/back/product/".$row['media_path']."' alt='Image 1'></a>";
+                  echo" <div class='card-body p-3 p-lg-4'>";
+                    
+                    echo"<p class='card-text text-muted text-sm'>".$row['media_path']."</p>";
+                  echo"</div>";
+                echo"</div>";
+              echo"</div>";
+       
+            }
+              ?>
               </div>
             </div>
           </section>
-                    <input type="submit" value="Submit" name="submit">
-                       </form>
+              </div>
+            </div>
+          </section>
+               
+                      
         </div>
 
 

@@ -24,7 +24,7 @@
         {
 	
 			/*insertion into categories*/
-			mysqli_query($conn, "INSERT INTO categories VALUES(0,'$category_name', $parent_category);"
+			mysqli_query($conn, "INSERT INTO categories VALUES(0,'$category_name', $parent_category,0);"
 			);
 		
 			

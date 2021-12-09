@@ -1,6 +1,14 @@
 <?php
 
 require_once("../controllers/database/connection.php");
+$conn = openCon();
+
+//$category_id=base64_decode($_GET['id']);
+
+
+$category_id=$_GET['id'];
+$oldValues=mysqli_query($conn,"SELECT * from categories where id=".$category_id);
+$oldRow=mysqli_fetch_array($oldValues);
 
 ?>
 
@@ -40,12 +48,10 @@ require_once("../controllers/database/connection.php");
 		  }
 
 		  if(isset($_GET["error"]) && $_GET["error"]==1) {
-			  echo "<p style='text-align:center;color:red;font-weight:bold;font-size:20px;'>product already exists.</p>";
+			  echo "<p style='text-align:center;color:red;font-weight:bold;font-size:20px;'>category already exists.</p>";
 		  }
 
-           if(isset($_GET["errorImage"]) && $_GET["errorImage"]==1) {
-			  echo "<p style='text-align:center;color:red;font-weight:bold;font-size:20px;'>error in image upload</p>";
-		  }
+         
 		?>
 
 
@@ -276,19 +282,19 @@ require_once("../controllers/database/connection.php");
 
         <div class="container-fluid px-lg-4 px-xl-5">
             <!-- here begins the main form-->
-               <form id="productInfo" action="insert-product-inter.php" method="post"  enctype="multipart/form-data" >
+               <form id="productInfo" action="update-category-inter.php?id=<?php echo"$category_id";?>" method="post"  enctype="multipart/form-data" >
 
               <!-- Breadcrumbs -->
               <div class="page-breadcrumb">
                 <ul class="breadcrumb">
                   <li class="breadcrumb-item"><a href="../index.html">Home</a></li>
-                  <li class="breadcrumb-item"><a href="e-commerce-products.html">Products</a></li>
-                  <li class="breadcrumb-item active">Add a Product     </li>
+                  <li class="breadcrumb-item"><a href="e-commerce-categories.html">Categories</a></li>
+                  <li class="breadcrumb-item active">Edit a Category     </li>
                 </ul>
               </div>
           <!-- Page Header-->
           <div class="page-header">
-            <h1 class="page-heading">Add a new product</h1>
+            <h1 class="page-heading">Edit a category</h1>
 
           </div>
           <section>
@@ -300,29 +306,53 @@ require_once("../controllers/database/connection.php");
                   </div>
 
                   <div class="card-body">
-                    <label class="form-label" for="postTitle">Product Name</label>
-                    <input class="form-control mb-4" id="productName" name="productName" type="text" required>
+                    <label class="form-label" for="postTitle">Category Name</label>
+                    <input class="form-control mb-4" id="categoryName" name="categoryName" type="text" value="<?php echo $oldRow['name'] ?>" required>
 
-                    <label class="form-label" for="postTitle">Product Description</label>
-                    <input class="form-control mb-4" id="productDesc" name="productDesc" type="text" required>
+                 
 
-                    <label class="form-label" for="postTitle">Product Tags</label>
-                    <input class="form-control mb-4" id="productTags" name="productTags" type="text" required>
-
-
-                                 <label class="form-label" for="postTitle">Product Category</label>
-                         <select name='productCat' style="width: 250px; height:30px; margin: 2%">
-                          <option disabled selected>-- Select Category --</option>
+                                 <label class="form-label" for="postTitle">Parent Category</label>
+                         <select name='parentCat' style="width: 250px; height:30px; margin: 2%">
+                         <!-- <option disabled selected>-- Select Category --</option>-->
+                      <!--    <option  value=""  selected> No Parent Category</option>-->
 
                              <?php
-                               $conn = openCon();
+                             
 
-                               $result = mysqli_query($conn, "SELECT * From categories where isDeleted=0");  // Use select query here
+                         
+                            
+
+
+                            
+
+
+                              if($oldRow["parent_id"] == NULL)
+                              {
+                                echo"<option  value=''  selected> No Parent Category </option>";
+                              }
+                        
+                              
+                               $result = mysqli_query($conn, "SELECT * FROM categories");  // Use select query here
+
                                while($row = mysqli_fetch_array($result))
                                {
-                                  echo "<option  value='". $row['id'] ."'>" .$row['name'] ."</option>";  // displaying data in option menu
-                               }
+                                echo "<option  value='". $row['id'] ."'";
+                                
+                                if($row['id'] == $oldRow['parent_id'])
+                                {
+                                  echo" selected ";
+                                }
 
+                                if($row["isDeleted"]== 1)
+                                {
+                                  echo" disabled ";
+                                }
+                                echo ">".$row['name'] ."</option>"; 
+                              
+                                 
+                               }
+                              
+                         
                                closeCon($conn);
                               ?>
                              </select>
@@ -331,7 +361,7 @@ require_once("../controllers/database/connection.php");
                   </div>
                 </div>
 
-                <div class="card mb-4">
+                <!--<div class="card mb-4">
                   <div class="card-header">
                     <div class="card-heading">Prices & Stock                 </div>
                   </div>
@@ -360,9 +390,9 @@ require_once("../controllers/database/connection.php");
                     <label class="form-label fw-bold">Quantity in stock</label>
                     <input class="form-control" name='productQuantity' required>
                   </div>
-                </div>
+                </div>-->
 
-                <div class="card mb-4">
+                <!--<div class="card mb-4">
                   <div class="card-header">
                     <div class="card-heading">Images                    </div>
                   </div>
@@ -375,7 +405,7 @@ require_once("../controllers/database/connection.php");
                     </div>
 
                   </div>
-                </div>
+                </div>-->
               </div>
             </div>
           </section>

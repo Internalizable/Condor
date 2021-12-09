@@ -23,8 +23,7 @@
         {
 	
 			/*insertion into products*/
-			mysqli_query($conn, "INSERT INTO products VALUES(0,'$product_name', '$product_main_price' , '$product_desc', '$product_quantity' , CURRENT_TIMESTAMP , '$product_percentage');"
-			);
+			mysqli_query($conn, "INSERT INTO products VALUES(0,'$product_name', '$product_main_price' , '$product_desc', '$product_quantity' , CURRENT_TIMESTAMP , '$product_percentage',0);");
 
 			/*insertion into products_categories*/
             $product_id=mysqli_insert_id($conn);
@@ -64,7 +63,7 @@
                     
                 }
               if(!empty($sqlVal)) {
-                    $insert = mysqli_query($conn,"INSERT INTO media VALUES ('$sqlVal');");
+                    //$insert = mysqli_query($conn,"INSERT INTO media VALUES ('$sqlVal');");
                    $insert2=mysqli_query($conn,"INSERT INTO products_media VALUES ( '$product_id','$sqlVal');");
                  
                    
