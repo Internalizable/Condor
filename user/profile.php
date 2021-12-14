@@ -218,7 +218,7 @@ if(!isset($_GET['id'])) {
                     echo '<div class="list-group rounded-0">';
 
                     $conn = openCon();
-                    $query = mysqli_query($conn, "SELECT * FROM users_timeline WHERE user_id='$userId' ORDER BY date DESC;");
+                    $query = mysqli_query($conn, "SELECT * FROM users_timeline WHERE users_id='$userId' ORDER BY date DESC;");
                     $currentDate = new DateTime("now");
 
                     $i = 0;
