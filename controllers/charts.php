@@ -28,7 +28,7 @@ for($i = 1; $i <= $month; $i++) {
     $upperDateFormatter = new DateTime( $subdate);
     $upperDate = $upperDateFormatter->format('Y-m-t');
 
-    $query = mysqli_query($conn, "SELECT SUM(totalPrice) AS price FROM ORDERS WHERE orderDate BETWEEN '$subdate' AND '$upperDate';");
+    $query = mysqli_query($conn, "SELECT SUM(quantity * unitPrice) AS price FROM ORDERS WHERE orderDate BETWEEN '$subdate' AND '$upperDate';");
 
     if($row = mysqli_fetch_array($query)) {
         if($row['price'] == null)
