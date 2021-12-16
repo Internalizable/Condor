@@ -50,7 +50,7 @@
   <body>
     <!-- navbar-->
     <header class="header">
-      <nav class="navbar navbar-expand-lg px-4 py-2 bg-white shadow"><a class="sidebar-toggler text-gray-500 me-4 me-lg-5 lead" href="#"><i class="fas fa-align-left"></i></a><a class="navbar-brand fw-bold text-uppercase text-base" href="index.html"><span class="d-none d-brand-partial">Condor </span><span class="d-none d-sm-inline">Dashboard</span></a>
+      <nav class="navbar navbar-expand-lg px-4 py-2 bg-white shadow"><a class="sidebar-toggler text-gray-500 me-4 me-lg-5 lead" href="#"><i class="fas fa-align-left"></i></a><a class="navbar-brand fw-bold text-uppercase text-base" href="index.php"><span class="d-none d-brand-partial">Condor </span><span class="d-none d-sm-inline">Dashboard</span></a>
         <ul class="ms-auto d-flex align-items-center list-unstyled mb-0">
           <li class="nav-item dropdown ms-auto"><a class="nav-link pe-0" id="userInfo" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   <img class="avatar p-1" src=
@@ -72,7 +72,7 @@
                   </small>
               </div>
               <div class="dropdown-divider"></div><a class="dropdown-item" href="../user/settings">Settings</a><a class="dropdown-item" href="#">Activity log</a>
-              <div class="dropdown-divider"></div><a class="dropdown-item" href="../user/logout">Logout</a>
+              <div class="dropdown-divider"></div><a class="dropdown-item" href="../user/logout.php">Logout</a>
             </div>
           </li>
         </ul>
@@ -86,6 +86,17 @@
                       <svg class="svg-icon svg-icon-md me-3">
                         <use xlink:href="icons/orion-svg-sprite.svg#real-estate-1"> </use>
                       </svg><span class="sidebar-link-title">Dashboard</span></a></li>
+
+                      <li class="sidebar-list-item"><a class="sidebar-link text-muted active" href="#" data-bs-target="#e-commerceDropdown" role="button" aria-expanded="true" data-bs-toggle="collapse">
+                     <span class="sidebar-link-title">E-commerce </span></a>
+                <ul class="sidebar-menu list-unstyled collapse show" id="e-commerceDropdown">
+                <li class="sidebar-list-item"><a class="sidebar-link text-muted" href="view-categories.php">Categories</a></li>
+                <li class="sidebar-list-item"><a class="sidebar-link text-muted" href="e-commerce-category-new.php">New Category</a></li>
+                  <li class="sidebar-list-item"><a class="sidebar-link text-muted" href="view-products.php">Products</a></li>
+                  <li class="sidebar-list-item"><a class="sidebar-link  text-muted" href="e-commerce-product-new.php">New Product</a></li>
+                  <li class="sidebar-list-item"><a class="sidebar-link text-muted" href="track-orders.php">Orders</a></li>
+                </ul>
+              </li>
         </ul>
       </div>
       <div class="page-holder bg-gray-100">
@@ -121,7 +132,20 @@
                   <div class="card-widget-body">
                     <div class="dot me-3 bg-green"></div>
                     <div class="text">
-                      <h6 class="mb-0">Open cases</h6><span class="text-gray-500">32</span>
+                      <h6 class="mb-0">Total Reviews</h6><span class="text-gray-500">
+                            <?php
+                            $conn = openCon();
+                            $query = mysqli_query($conn, "SELECT COUNT(*) AS total FROM REVIEWS;");
+
+                            if($row = mysqli_fetch_array($query))
+                                if($row['total'] == null)
+                                    echo  '0 orders';
+                                else
+                                    echo $row['total'] . ' reviews';
+
+                            closeCon($conn);
+                            ?>
+                        </span>
                     </div>
                   </div>
                   <div class="icon text-white bg-green"><i class="far fa-clipboard"></i></div>
@@ -132,7 +156,20 @@
                   <div class="card-widget-body">
                     <div class="dot me-3 bg-blue"></div>
                     <div class="text">
-                      <h6 class="mb-0">Work orders</h6><span class="text-gray-500">400</span>
+                      <h6 class="mb-0">Total Orders</h6><span class="text-gray-500">
+                            <?php
+                            $conn = openCon();
+                            $query = mysqli_query($conn, "SELECT COUNT(ordersid) AS total FROM ORDERS;");
+
+                            if($row = mysqli_fetch_array($query))
+                                if($row['total'] == null)
+                                    echo  '0 orders';
+                                else
+                                    echo $row['total'] . ' orders';
+
+                            closeCon($conn);
+                            ?>
+                        </span>
                     </div>
                   </div>
                   <div class="icon text-white bg-blue"><i class="fa fa-dolly-flatbed"></i></div>
@@ -143,7 +180,20 @@
                   <div class="card-widget-body">
                     <div class="dot me-3 bg-red"></div>
                     <div class="text">
-                      <h6 class="mb-0">New invoices</h6><span class="text-gray-500">123</span>
+                      <h6 class="mb-0">User Satisfaction</h6><span class="text-gray-500">
+                            <?php
+                            $conn = openCon();
+                            $query = mysqli_query($conn, "SELECT AVG(rating) AS total FROM REVIEWS;");
+
+                            if($row = mysqli_fetch_array($query))
+                                if($row['total'] == null)
+                                    echo  '0 stars';
+                                else
+                                    echo $row['total'] . ' stars';
+
+                            closeCon($conn);
+                            ?>
+                        </span>
                     </div>
                   </div>
                   <div class="icon text-white bg-red"><i class="fas fa-receipt"></i></div>
@@ -172,8 +222,23 @@
                     <div class="card-body d-flex">
                       <div class="row w-100 align-items-center">
                         <div class="col-sm-5 mb-4 mb-sm-0">
-                          <h2 class="mb-0 d-flex align-items-center"><span>86.4</span><span class="dot bg-green d-inline-block ms-3"></span></h2><span class="text-muted text-uppercase small">Work hours</span>
-                          <hr><small class="text-muted">Hours worked this month</small>
+                          <h2 class="mb-0 d-flex align-items-center">
+                              <span>
+                                  <?php
+                                  $conn = openCon();
+                                  $query = mysqli_query($conn, "SELECT SUM(quantity * unitPrice) AS total FROM ORDERS;");
+
+                                  if($row = mysqli_fetch_array($query))
+                                      if($row['total'] == null)
+                                          echo  '0$';
+                                      else
+                                          echo $row['total'] . '$';
+
+                                  closeCon($conn);
+                                  ?>
+                              </span>
+                              <span class="dot bg-green d-inline-block ms-3"></span></h2><span class="text-muted text-uppercase small">Total Money</span>
+                          <hr><small class="text-muted">Total money gained.</small>
                         </div>
                         <div class="col-sm-7">
                           <canvas id="pieChartHome1"></canvas>
@@ -187,8 +252,23 @@
                     <div class="card-body d-flex">
                       <div class="row w-100 align-items-center">
                         <div class="col-sm-5 mb-4 mb-sm-0">
-                          <h2 class="mb-0 d-flex align-items-center"><span>325</span><span class="dot bg-indigo d-inline-block ms-3"></span></h2><span class="text-muted text-uppercase small">Tasks Completed</span>
-                          <hr><small class="text-muted">Tasks Completed this months</small>
+                          <h2 class="mb-0 d-flex align-items-center">
+                              <span>
+                                  <?php
+                                  $conn = openCon();
+                                  $query = mysqli_query($conn, "SELECT COUNT(coupon) AS total FROM COUPONS;");
+
+                                  if($row = mysqli_fetch_array($query))
+                                      if($row['total'] == null)
+                                          echo  '0';
+                                      else
+                                          echo $row['total'];
+
+                                  closeCon($conn);
+                                  ?>
+                              </span>
+                              <span class="dot bg-indigo d-inline-block ms-3"></span></h2><span class="text-muted text-uppercase small">Coupons Active</span>
+                          <hr><small class="text-muted">Coupons currently active.</small>
                         </div>
                         <div class="col-sm-7">
                           <canvas id="pieChartHome2"></canvas>
@@ -206,76 +286,32 @@
               <div class="col-lg-7 col-xl-6 mb-5 mb-lg-0">
                 <div class="card h-100">
                   <div class="card-header">
-                    <h4 class="card-heading">Transaction history</h4>
+                    <h4 class="card-heading">Most popular products</h4>
                   </div>
                   <div class="card-body">
-                    <p class="text-gray-500 mb-5">Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+                    <p class="text-gray-500 mb-5">The products are ordered based on their popularity (units sold).</p>
+                    <?php
+                    $conn = openCon();
+                    $query = mysqli_query($conn, "SELECT products.name AS prodName, products.description AS prodDesc, SUM(orders.quantity * orders.unitPrice) AS prodPrice  FROM PRODUCTS JOIN ORDERS ON products.id = orders.products_id GROUP BY products.id ORDER BY prodPrice DESC LIMIT 6;");
+
+                    if($row = mysqli_fetch_array($query)) {
+                    ?>
                     <div class="d-flex justify-content-between align-items-start align-items-sm-center mb-4 flex-column flex-sm-row">
                       <div class="left d-flex align-items-center">
                         <div class="icon icon-lg shadow me-3 text-gray-700"><i class="fab fa-dropbox"></i></div>
                         <div class="text">
-                          <h6 class="mb-0 d-flex align-items-center"> <span>Dropbox Inc.</span><span class="dot dot-sm ms-2 bg-indigo"></span></h6><small class="text-gray-500">Account renewal</small>
+                          <h6 class="mb-0 d-flex align-items-center"> <span><?php echo $row['prodName'];?></span><span class="dot dot-sm ms-2 bg-indigo"></span></h6><small class="text-gray-500"><?php echo $row['prodDesc']; ?></small>
                         </div>
                       </div>
                       <div class="right ms-5 ms-sm-0 ps-3 ps-sm-0">
-                        <h5>-$20</h5>
+                        <h5><?php echo $row['prodPrice'] . '$';?></h5>
                       </div>
                     </div>
-                    <div class="d-flex justify-content-between align-items-start align-items-sm-center mb-4 flex-column flex-sm-row">
-                      <div class="left d-flex align-items-center">
-                        <div class="icon icon-lg shadow me-3 text-gray-700"><i class="fab fa-apple"></i></div>
-                        <div class="text">
-                          <h6 class="mb-0 d-flex align-items-center"> <span>App Store.</span><span class="dot dot-sm ms-2 bg-green"></span></h6><small class="text-gray-500">Software cost</small>
-                        </div>
-                      </div>
-                      <div class="right ms-5 ms-sm-0 ps-3 ps-sm-0">
-                        <h5>-$20</h5>
-                      </div>
-                    </div>
-                    <div class="d-flex justify-content-between align-items-start align-items-sm-center mb-4 flex-column flex-sm-row">
-                      <div class="left d-flex align-items-center">
-                        <div class="icon icon-lg shadow me-3 text-gray-700"><i class="fas fa-shopping-basket"></i></div>
-                        <div class="text">
-                          <h6 class="mb-0 d-flex align-items-center"> <span>Supermarket.</span><span class="dot dot-sm ms-2 bg-blue"></span></h6><small class="text-gray-500">Shopping</small>
-                        </div>
-                      </div>
-                      <div class="right ms-5 ms-sm-0 ps-3 ps-sm-0">
-                        <h5>-$20</h5>
-                      </div>
-                    </div>
-                    <div class="d-flex justify-content-between align-items-start align-items-sm-center mb-4 flex-column flex-sm-row">
-                      <div class="left d-flex align-items-center">
-                        <div class="icon icon-lg shadow me-3 text-gray-700"><i class="fab fa-android"></i></div>
-                        <div class="text">
-                          <h6 class="mb-0 d-flex align-items-center"> <span>Play Store.</span><span class="dot dot-sm ms-2 bg-red"></span></h6><small class="text-gray-500">Software cost</small>
-                        </div>
-                      </div>
-                      <div class="right ms-5 ms-sm-0 ps-3 ps-sm-0">
-                        <h5>-$20</h5>
-                      </div>
-                    </div>
-                    <div class="d-flex justify-content-between align-items-start align-items-sm-center mb-4 flex-column flex-sm-row">
-                      <div class="left d-flex align-items-center">
-                        <div class="icon icon-lg shadow me-3 text-gray-700"><i class="fab fa-dropbox"></i></div>
-                        <div class="text">
-                          <h6 class="mb-0 d-flex align-items-center"> <span>Dropbox Inc.</span><span class="dot dot-sm ms-2 bg-primary"></span></h6><small class="text-gray-500">Account renewal</small>
-                        </div>
-                      </div>
-                      <div class="right ms-5 ms-sm-0 ps-3 ps-sm-0">
-                        <h5>-$20</h5>
-                      </div>
-                    </div>
-                    <div class="d-flex justify-content-between align-items-start align-items-sm-center mb-4 flex-column flex-sm-row">
-                      <div class="left d-flex align-items-center">
-                        <div class="icon icon-lg shadow me-3 text-gray-700"><i class="fab fa-apple"></i></div>
-                        <div class="text">
-                          <h6 class="mb-0 d-flex align-items-center"> <span>App Store.</span><span class="dot dot-sm ms-2 bg-blue"></span></h6><small class="text-gray-500">Software cost</small>
-                        </div>
-                      </div>
-                      <div class="right ms-5 ms-sm-0 ps-3 ps-sm-0">
-                        <h5>-$20</h5>
-                      </div>
-                    </div>
+                    <?php
+                    }
+
+                    closeCon($conn);
+                    ?>
                   </div>
                 </div>
               </div>
@@ -284,44 +320,27 @@
                   <div class="col-xxl-6">
                     <div class="card-widget mb-4">
                       <div class="card-widget-body">
-                        <div class="dot me-3 bg-indigo"></div>
-                        <div class="text">
-                          <h6 class="mb-0">Completed cases</h6><span class="text-gray-500">127 new cases</span>
-                        </div>
-                      </div>
-                      <div class="icon text-white bg-indigo"><i class="fas fa-clipboard-check"></i></div>
-                    </div>
-                  </div>
-                  <div class="col-xxl-6">
-                    <div class="card-widget mb-4">
-                      <div class="card-widget-body">
-                        <div class="dot me-3 bg-green"></div>
-                        <div class="text">
-                          <h6 class="mb-0">New Quotes</h6><span class="text-gray-500">214 new quotes</span>
-                        </div>
-                      </div>
-                      <div class="icon text-white bg-green"><i class="fas fa-dollar-sign"></i></div>
-                    </div>
-                  </div>
-                  <div class="col-xxl-6">
-                    <div class="card-widget mb-4">
-                      <div class="card-widget-body">
                         <div class="dot me-3 bg-blue"></div>
                         <div class="text">
-                          <h6 class="mb-0">New clients</h6><span class="text-gray-500">25 new clients</span>
+                          <h6 class="mb-0">New clients</h6><span class="text-gray-500">
+                                <?php
+                                $conn = openCon();
+
+                                $date = date('Y-m-d', strtotime("-1 days"));
+
+                                $query = mysqli_query($conn, "SELECT COUNT(id) AS total FROM USERS WHERE joinDate='$date';");
+
+                                if($row = mysqli_fetch_array($query))
+                                    if($row['total'] == null)
+                                        echo  '0';
+                                    else
+                                        echo $row['total'];
+
+                                closeCon($conn);
+                                ?> new client(s)</span>
                         </div>
                       </div>
                       <div class="icon text-white bg-blue"><i class="fas fa-user-friends"></i></div>
-                    </div>
-                  </div>
-                  <div class="col-12 order-xxl-1">
-                    <div class="card h-100">
-                      <div class="card-body">
-                        <h2 class="mb-0 d-flex align-items-center"><span>86.4</span><span class="dot bg-red d-inline-block ms-3"></span></h2><span class="text-muted">Daily Profile Visitors</span>
-                        <div class="chart-holder w-100">
-                          <canvas id="lineChart3"></canvas>
-                        </div>
-                      </div>
                     </div>
                   </div>
                 </div>
@@ -331,46 +350,28 @@
           <section class="mb-4">
             <h2 class="section-heading section-heading-ms mb-4 mb-lg-5">Latest Users 👩‍💻</h2>
             <div class="row">
-              <div class="col-sm-6 col-xl-12"><a class="message card px-5 py-3 mb-4 bg-hover-gradient-primary text-decoration-none text-reset" href="#">
+                <?php
+                $conn = openCon();
+
+                $query = mysqli_query($conn, "SELECT id, firstname, lastname, joinDate, bio, verified, profile_path FROM USERS ORDER BY joinDate DESC LIMIT 5;");
+
+                if($row = mysqli_fetch_array($query)) {
+                    $date = DateTime::createFromFormat("Y-m-d", $row['joinDate']);
+                ?>
+              <div class="col-sm-6 col-xl-12"><a class="message card px-5 py-3 mb-4 bg-hover-gradient-primary text-decoration-none text-reset" href="../user/profile?id=<?php echo base64_encode($row['id']);?>">
                   <div class="row">
-                    <div class="col-xl-3 d-flex align-items-center flex-column flex-xl-row text-center text-md-left"><strong class="h5 mb-0">24<sup class="text-xs text-gray-500 font-weight-normal ms-1">Apr</sup></strong><img class="avatar avatar-md p-1 mx-3 my-2 my-xl-0" src="img/avatar-1.jpg" alt="..." style="max-width: 3rem">
-                      <h6 class="mb-0">Jason Maxwell</h6>
+                    <div class="col-xl-3 d-flex align-items-center flex-column flex-xl-row text-center text-md-left"><strong class="h5 mb-0"><?php echo $date->format("d")?><sup class="text-xs text-gray-500 font-weight-normal ms-1"><?php echo $date->format("M")?></sup></strong><img class="avatar avatar-md p-1 mx-3 my-2 my-xl-0" src="<?php echo '../' . $row['profile_path'];?>" alt="..." style="max-width: 3rem">
+                      <h6 class="mb-0 "><?php echo $row['firstname'] . ' ' . $row['lastname'];?></h6>
                     </div>
                     <div class="col-xl-9 d-flex align-items-center flex-column flex-xl-row text-center text-md-left">
-                      <div class="bg-gray-200 rounded-pill px-4 py-1 me-0 me-xl-3 mt-3 mt-xl-0 text-sm text-dark exclude">User testing</div>
-                      <p class="mb-0 mt-3 mt-lg-0">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor.</p>
+                      <div class="bg-<?php if($row['verified'] == 1) echo 'green'; else echo 'red';?> rounded-pill px-4 py-1 me-0 me-xl-3 mt-3 mt-xl-0 text-sm text-white exclude"><?php if($row['verified'] == 1) echo 'Verified'; else echo 'Non Verified';?></div>
                     </div>
                   </div></a></div>
-              <div class="col-sm-6 col-xl-12"><a class="message card px-5 py-3 mb-4 bg-hover-gradient-primary text-decoration-none text-reset" href="#">
-                  <div class="row">
-                    <div class="col-xl-3 d-flex align-items-center flex-column flex-xl-row text-center text-md-left"><strong class="h5 mb-0">24<sup class="text-xs text-gray-500 font-weight-normal ms-1">Nov</sup></strong><img class="avatar avatar-md p-1 mx-3 my-2 my-xl-0" src="img/avatar-2.jpg" alt="..." style="max-width: 3rem">
-                      <h6 class="mb-0">Sam Andy</h6>
-                    </div>
-                    <div class="col-xl-9 d-flex align-items-center flex-column flex-xl-row text-center text-md-left">
-                      <div class="bg-gray-200 rounded-pill px-4 py-1 me-0 me-xl-3 mt-3 mt-xl-0 text-sm text-dark exclude">Web Developer</div>
-                      <p class="mb-0 mt-3 mt-lg-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit..</p>
-                    </div>
-                  </div></a></div>
-              <div class="col-sm-6 col-xl-12"><a class="message card px-5 py-3 mb-4 bg-hover-gradient-primary text-decoration-none text-reset" href="#">
-                  <div class="row">
-                    <div class="col-xl-3 d-flex align-items-center flex-column flex-xl-row text-center text-md-left"><strong class="h5 mb-0">17<sup class="text-xs text-gray-500 font-weight-normal ms-1">Aug</sup></strong><img class="avatar avatar-md p-1 mx-3 my-2 my-xl-0" src="img/avatar-3.jpg" alt="..." style="max-width: 3rem">
-                      <h6 class="mb-0">Margret Peter</h6>
-                    </div>
-                    <div class="col-xl-9 d-flex align-items-center flex-column flex-xl-row text-center text-md-left">
-                      <div class="bg-gray-200 rounded-pill px-4 py-1 me-0 me-xl-3 mt-3 mt-xl-0 text-sm text-dark exclude">Analysis Agent</div>
-                      <p class="mb-0 mt-3 mt-lg-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit..</p>
-                    </div>
-                  </div></a></div>
-              <div class="col-sm-6 col-xl-12"><a class="message card px-5 py-3 mb-4 bg-hover-gradient-primary text-decoration-none text-reset" href="#">
-                  <div class="row">
-                    <div class="col-xl-3 d-flex align-items-center flex-column flex-xl-row text-center text-md-left"><strong class="h5 mb-0">15<sup class="text-xs text-gray-500 font-weight-normal ms-1">Sep</sup></strong><img class="avatar avatar-md p-1 mx-3 my-2 my-xl-0" src="img/avatar-4.jpg" alt="..." style="max-width: 3rem">
-                      <h6 class="mb-0">Jason Doe</h6>
-                    </div>
-                    <div class="col-xl-9 d-flex align-items-center flex-column flex-xl-row text-center text-md-left">
-                      <div class="bg-gray-200 rounded-pill px-4 py-1 me-0 me-xl-3 mt-3 mt-xl-0 text-sm text-dark exclude">User testing</div>
-                      <p class="mb-0 mt-3 mt-lg-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit..</p>
-                    </div>
-                  </div></a></div>
+                <?php
+                }
+
+                closeCon($conn);
+                ?>
             </div>
           </section>
         </div>
