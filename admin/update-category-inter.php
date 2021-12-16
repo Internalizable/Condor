@@ -45,7 +45,7 @@
 
 			closeCon($conn);
 
-            header("Location:e-commerce-category-new.php?success");
+            header("Location:view-categories.php");
 
 
         

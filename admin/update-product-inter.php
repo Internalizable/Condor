@@ -163,11 +163,11 @@
                  
                  }
 
-                 $checkTag=mysqli_query($con,"select * from tags where tag in ('". implode(',', $product_tags) . "')");
+                 /*$checkTag=mysqli_query($con,"select * from tags where tag in ('". implode(',', $product_tags) . "')");
                  
                  if(mysqli_num_rows($checkTag)==0){
                       $sqltag="INSERT INTO tags VALUES {$sqltag};";
-				 }
+				 }*/
           
                      //delete the existing tags (in products_tags only)
                  $deleteOld="DELETE from products_tags where products_id=".$product_id;
@@ -199,7 +199,7 @@
             }
           */
        
-         //header("Location:view-products.php");
+         header("Location:view-products.php");
        
 
 
