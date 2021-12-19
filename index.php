@@ -1,3 +1,13 @@
+<?php 
+require_once("controllers/database/connection.php");
+	  
+$con = openCon();
+session_start();
+
+if (!isset($_SESSION['id']))
+$userid=-1;
+else $userid=$_SESSION['id'];
+?>
 <!DOCTYPE html>
 <html>
   <head>
@@ -34,81 +44,120 @@
   <body>
     <div class="page-holder">
       <!-- navbar-->
-      <header class="header bg-white">
-        <div class="container px-0 px-lg-3">
-          <nav class="navbar navbar-expand-lg navbar-light py-3 px-lg-0"><a class="navbar-brand" href="index.html"><span class="font-weight-bold text-uppercase text-dark">Boutique</span></a>
-            <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-              <ul class="navbar-nav mr-auto">
-                <li class="nav-item">
-                  <!-- Link--><a class="nav-link active" href="index.html">Home</a>
-                </li>
-                <li class="nav-item">
-                  <!-- Link--><a class="nav-link" href="shop.html">Shop</a>
-                </li>
-                <li class="nav-item">
-                  <!-- Link--><a class="nav-link" href="detail.html">Product detail</a>
-                </li>
-                <li class="nav-item dropdown"><a class="nav-link dropdown-toggle" id="pagesDropdown" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Pages</a>
-                  <div class="dropdown-menu mt-3" aria-labelledby="pagesDropdown"><a class="dropdown-item border-0 transition-link" href="index.html">Homepage</a><a class="dropdown-item border-0 transition-link" href="shop.html">Category</a><a class="dropdown-item border-0 transition-link" href="detail.html">Product detail</a><a class="dropdown-item border-0 transition-link" href="cart.html">Shopping cart</a><a class="dropdown-item border-0 transition-link" href="checkout.html">Checkout</a></div>
-                </li>
-              </ul>
-              <ul class="navbar-nav ml-auto">
-                <li class="nav-item"><a class="nav-link" href="cart.html"> <i class="fas fa-dolly-flatbed mr-1 text-gray"></i>Cart<small class="text-gray">(2)</small></a></li>
-                <li class="nav-item"><a class="nav-link" href="#"> <i class="far fa-heart mr-1"></i><small class="text-gray"> (0)</small></a></li>
-                <li class="nav-item"><a class="nav-link" href="login.html"> <i class="fas fa-user-alt mr-1 text-gray"></i>Login</a></li>
-              </ul>
-            </div>
-          </nav>
-        </div>
-      </header>
+       <header class="header bg-white">
+      <div class="container px-0 px-lg-3">
+        <nav class="navbar navbar-expand-lg navbar-light py-3 px-lg-0"><a class="navbar-brand" href="index.php"><span class="font-weight-bold text-uppercase text-dark">Boutique</span></a>
+          <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+              <li class="nav-item">
+                <!-- Link--><a class="nav-link" href="index.php">Home</a>
+              </li>
+              <li class="nav-item">
+                <!-- Link--><a class="nav-link" href="shop.php">Shop</a>
+              </li>
+            </ul>
+            <ul class="navbar-nav ml-auto">
+              
+              <?php 
+                if($userid == -1) {
+              ?>
+              <li class="nav-item"><a class="nav-link" href="user/login.php"> <i class="fas fa-user-alt mr-1 text-gray"></i>Login</a></li>
+              <?php } 
+              else {
+                echo "<li class='nav-item'><a class='nav-link' href='cart.php'> <i class='fas fa-dolly-flatbed mr-1 text-gray'></i>Cart<small class='text-gray'></small></a></li>
+                <li class='nav-item'><a class='nav-link' href='wishlist1.php'> <i class='far fa-heart mr-1'></i><small class='text-gray'>";
+				$resultss = mysqli_query($con, "SELECT count(*) as total from wishlist where users_id='$userid'");
+				if (mysqli_num_rows($resultss) == false) {
+				echo "(0)";
+				} else {
+				while ($row = mysqli_fetch_array($resultss)) {
+				echo "(".$row["total"].")";
+					}
+				}
+				echo "</small></a></li>";
+                echo "
+
+                <li class='nav-item dropdown'><a class='nav-link dropdown-toggle' id='pagesDropdown' href='#' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'><i class='fas fa-user-alt mr-1 text-gray'></i></a>
+                  <div class='dropdown-menu mt-3' aria-labelledby='pagesDropdown'><a class='dropdown-item border-0 transition-link' href='user/profile.php?id=".base64_encode($userid)."'>User Profile</a>
+                  ";
+                  echo "
+                  <a class='dropdown-item border-0 transition-link' href='myorders.php'>My Orders</a>";
+                  if (isset($_SESSION['admin'])&& $_SESSION['admin']==true)
+                  echo "
+                  <a class='dropdown-item border-0 transition-link' href='admin/index.php'>Admin Panel</a>";
+                  echo "
+                  <a class='dropdown-item border-0 transition-link' href='user/logout.php'>Logout</a></div>
+                </li>";
+              }
+              ?>
+            </ul>
+          </div>
+        </nav>
+      </div>
+    </header>
       <!--  Modal -->
-      <div class="modal fade" id="productView" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-          <div class="modal-content">
-            <div class="modal-body p-0">
-              <div class="row align-items-stretch">
-                <div class="col-lg-6 p-lg-0"><a class="product-view d-block h-100 bg-cover bg-center" style="background: url(img/front/product-5.jpg)" href="img/front/product-5.jpg" data-lightbox="productview" title="Red digital smartwatch"></a><a class="d-none" href="img/product-5-alt-1.jpg" title="Red digital smartwatch" data-lightbox="productview"></a><a class="d-none" href="img/product-5-alt-2.jpg" title="Red digital smartwatch" data-lightbox="productview"></a></div>
-                <div class="col-lg-6">
-                  <button class="close p-4" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                  <div class="p-5 my-md-4">
-                    <ul class="list-inline mb-2">
-                      <li class="list-inline-item m-0"><i class="fas fa-star small text-warning"></i></li>
-                      <li class="list-inline-item m-0"><i class="fas fa-star small text-warning"></i></li>
-                      <li class="list-inline-item m-0"><i class="fas fa-star small text-warning"></i></li>
-                      <li class="list-inline-item m-0"><i class="fas fa-star small text-warning"></i></li>
-                      <li class="list-inline-item m-0"><i class="fas fa-star small text-warning"></i></li>
-                    </ul>
-                    <h2 class="h4">Red digital smartwatch</h2>
-                    <p class="text-muted">$250</p>
-                    <p class="text-small mb-4">Lorem ipsum dolor sit amet, consectetur adipiscing elit. In ut ullamcorper leo, eget euismod orci. Cum sociis natoque penatibus et magnis dis parturient montes nascetur ridiculus mus. Vestibulum ultricies aliquam convallis.</p>
-                    <div class="row align-items-stretch mb-4">
-                      <div class="col-sm-7 pr-sm-0">
-                        <div class="border d-flex align-items-center justify-content-between py-1 px-3"><span class="small text-uppercase text-gray mr-4 no-select">Quantity</span>
-                          <div class="quantity">
-                            <button class="dec-btn p-0"><i class="fas fa-caret-left"></i></button>
-                            <input class="form-control border-0 shadow-0 p-0" type="text" value="1">
-                            <button class="inc-btn p-0"><i class="fas fa-caret-right"></i></button>
-                          </div>
-                        </div>
+      <?php 
+	  //require_once("conn.php");
+	$result = mysqli_query($con, "SELECT * from products where isDeleted=0 order by dateAdded desc");
+	$media = mysqli_query($con, "select media_path as path from products_media, products where products.isDeleted=0 and products.id=products_media.products_id order by products.dateAdded desc");		
+	//$id=$_GET['productid'];
+	if (mysqli_num_rows($result) == false) {
+	echo "Error there's no products!";
+	} else {
+	while ($row = mysqli_fetch_array($result) and $rmedia= mysqli_fetch_array($media)) {
+	$rating = mysqli_query($con, "select avg(rating) as avgrating from reviews join products on products.id=reviews.products_id where products.id=$row[id]");
+    $rrating = mysqli_fetch_array($rating)["avgrating"];
+	echo "<div class='modal fade' id='productView".$row['id']."' tabindex='-1' role='dialog' aria-hidden='true'>
+        <div class='modal-dialog modal-lg modal-dialog-centered' role='document'>
+          <div class='modal-content'>
+            <div class='modal-body p-0'>
+				<div class='row align-items-stretch'>
+                <div class='col-lg-6 p-lg-0'><a class='product-view d-block h-100 bg-cover bg-center' style='background: url(".$rmedia['path'].")' href='".$rmedia['path']."' data-lightbox='productview' title='".$row['name']."'></a><a class='d-none' href='".$rmedia['path']."' title='".$row['name']."' data-lightbox='productview'></a></div>
+                <div class='col-lg-6'>
+                  <button class='close p-4' type='button' data-dismiss='modal' aria-label='Close'><span aria-hidden='true'>×</span></button>
+                  <div class='p-5 my-md-4'>
+                    <ul class='list-inline mb-2'>";
+              $i = 0;
+              for ($x = 1; $x <= $rrating; $x++) {
+                echo "<li class='list-inline-item m-0'><i class='fas fa-star text-warning'></i></li>";
+                $i++;
+              }
+              if (fmod($rrating, 1.0) != 0) {
+                echo "<li class='list-inline-item m-0'><i class='fas fa-star-half-alt text-warning'></i></li>";
+                $i++;
+              }
+              while ($i < 5) {
+                echo "<li class='list-inline-item m-0'><i class='far fa-star text-warning'></i></li>";
+                $i++;
+              }
+                    echo"</ul>
+                    <h2 class='h4'>".$row["name"]."</h2>
+                    <p class='text-muted'>$".$row["price"]."</p>
+                    <p class='text-small mb-4'>".$row["description"]."</p>
+                    <div class='row align-items-stretch mb-4'>
+                      <div class='col-sm-7 pr-sm-0'>
                       </div>
-                      <div class="col-sm-5 pl-sm-0"><a class="btn btn-dark btn-sm btn-block h-100 d-flex align-items-center justify-content-center px-0" href="cart.html">Add to cart</a></div>
-                    </div><a class="btn btn-link text-dark p-0" href="#"><i class="far fa-heart mr-2"></i>Add to wish list</a>
+                    </div><a class='btn btn-link text-dark p-0' href='add-to-wishlist.php?productid=".base64_encode($row['id'])."'><i class='far fa-heart mr-2'></i>Add to wish list</a>
                   </div>
-                </div>
+                </div
               </div>
             </div>
+			</div>
           </div>
         </div>
-      </div>
+      </div>";
+	}
+	}
+	  ?>
       <!-- HERO SECTION-->
       <div class="container">
         <section class="hero pb-3 bg-cover bg-center d-flex align-items-center" style="background: url(img/front/hero-banner-alt.jpg)">
           <div class="container py-5">
             <div class="row px-4 px-lg-5">
               <div class="col-lg-6">
-                <p class="text-muted small text-uppercase mb-2">New Inspiration 2020</p>
-                <h1 class="h2 text-uppercase mb-3">20% off on new season</h1><a class="btn btn-dark" href="shop.html">Browse collections</a>
+                <p class="text-muted small text-uppercase mb-2">New Inspiration 2021</p>
+                <h1 class="h2 text-uppercase mb-3">20% off on new season</h1><a class="btn btn-dark" href="shop.php">Browse collections</a>
               </div>
             </div>
           </div>
@@ -120,157 +169,54 @@
             <h2 class="h5 text-uppercase mb-4">Browse our categories</h2>
           </header>
           <div class="row">
-            <div class="col-md-4 mb-4 mb-md-0"><a class="category-item" href="shop.html"><img class="img-fluid" src="img/front/cat-img-1.jpg" alt=""><strong class="category-item-title">Clothes</strong></a></div>
-            <div class="col-md-4 mb-4 mb-md-0"><a class="category-item mb-4" href="shop.html"><img class="img-fluid" src="img/front/cat-img-2.jpg" alt=""><strong class="category-item-title">Shoes</strong></a><a class="category-item" href="shop.html"><img class="img-fluid" src="img/front/cat-img-3.jpg" alt=""><strong class="category-item-title">Watches</strong></a></div>
-            <div class="col-md-4"><a class="category-item" href="shop.html"><img class="img-fluid" src="img/front/cat-img-4.jpg" alt=""><strong class="category-item-title">Electronics</strong></a></div>
-          </div>
+		  <?php
+            echo "<div class='col-md-4 mb-4 mb-md-0'><a class='category-item' href='shop-categories.php?categorie_id=4'><img class='img-fluid' src='img/front/cat-img-1.jpg' alt='Photo'><strong class='category-item-title'>Category 1-1</strong></a></div>
+            <div class='col-md-4 mb-4 mb-md-0'><a class='category-item mb-4' href='shop-categories.php?categorie_id=7'><img class='img-fluid' src='img/front/cat-img-2.jpg' alt='photo'><strong class='category-item-title'>Category 2-1</strong></a><a class='category-item' href='shop-categories.php?categorie_id=5'><img class='img-fluid' src='img/front/cat-img-3.jpg' alt='photo'><strong class='category-item-title'>Category 1-2</strong></a></div>
+            <div class='col-md-4'><a class='category-item' href='shop-categories.php?categorie_id=10'><img class='img-fluid' src='img/front/cat-img-4.jpg' alt='photo'><strong class='category-item-title'>Category 3-1</strong></a></div>";
+          ?>
+		  </div>
         </section>
         <!-- TRENDING PRODUCTS-->
         <section class="py-5">
           <header>
             <p class="small text-muted small text-uppercase mb-1">Made the hard way</p>
-            <h2 class="h5 text-uppercase mb-4">Top trending products</h2>
+            <h2 class="h5 text-uppercase mb-4">Newest products</h2>
           </header>
           <div class="row">
             <!-- PRODUCT-->
-            <div class="col-xl-3 col-lg-4 col-sm-6">
-              <div class="product text-center">
-                <div class="position-relative mb-3">
-                  <div class="badge text-white badge-"></div><a class="d-block" href="detail.html"><img class="img-fluid w-100" src="img/front/product-1.jpg" alt="..."></a>
-                  <div class="product-overlay">
-                    <ul class="mb-0 list-inline">
-                      <li class="list-inline-item m-0 p-0"><a class="btn btn-sm btn-outline-dark" href="#"><i class="far fa-heart"></i></a></li>
-                      <li class="list-inline-item m-0 p-0"><a class="btn btn-sm btn-dark" href="cart.html">Add to cart</a></li>
-                      <li class="list-inline-item mr-0"><a class="btn btn-sm btn-outline-dark" href="#productView" data-toggle="modal"><i class="fas fa-expand"></i></a></li>
-                    </ul>
+			<?php
+				//require_once("conn.php");
+					  $result = mysqli_query($con, "SELECT * from products where isDeleted=0");		
+							if (mysqli_num_rows($result) == false) {
+							echo "Error there's no products!";
+							} else {
+						$rows_per_page = 8;	
+						$sql = "SELECT * FROM products where isDeleted=0 order by dateAdded desc LIMIT $rows_per_page";
+						$r1 = mysqli_query($con, $sql);
+						$media = mysqli_query($con, "select media_path as path from products_media, products where products.isDeleted=0 and products.id=products_media.products_id order by products.dateAdded desc LIMIT $rows_per_page");
+							while ($row = mysqli_fetch_array($r1)) {
+								$rmedia= mysqli_fetch_array($media);
+								echo "<div class='col-xl-3 col-lg-4 col-sm-6'>
+								<div class='product text-center'>
+								<div class='mb-3 position-relative'>
+								<div class='badge text-white badge-'></div><a class='d-block' href='detail.php?productid=" .base64_encode($row["id"]) ."'><img class='img-fluid w-100' src='" . $rmedia["path"] . "' alt='photo'></a>
+								<div class='product-overlay'>
+								<ul class='mb-0 list-inline'>
+								<li class='list-inline-item m-0 p-0'><a class='btn btn-sm btn-outline-dark' href='add-to-wishlist.php?productid=".base64_encode($row['id'])."'><i class='far fa-heart'></i></a></li>
+								
+								<li class='list-inline-item mr-0'><a  class='btn btn-sm btn-outline-dark' href='#productView".$row['id']."' data-toggle='modal'><i class='fas fa-expand'></i></a></li>
+                          </ul>
+                        </div>
+                      </div>
+                      <h6> <a class='reset-anchor' href='detail.php?productid=" . base64_encode($row["id"]) ."'>".$row['name']."</a></h6>
+                      <p class='small text-muted'>$".$row['price']."</p>
+                    </div>
                   </div>
-                </div>
-                <h6> <a class="reset-anchor" href="detail.html">Kui Ye Chen’s AirPods</a></h6>
-                <p class="small text-muted">$250</p>
-              </div>
-            </div>
-            <!-- PRODUCT-->
-            <div class="col-xl-3 col-lg-4 col-sm-6">
-              <div class="product text-center">
-                <div class="position-relative mb-3">
-                  <div class="badge text-white badge-primary">Sale</div><a class="d-block" href="detail.html"><img class="img-fluid w-100" src="img/front/product-2.jpg" alt="..."></a>
-                  <div class="product-overlay">
-                    <ul class="mb-0 list-inline">
-                      <li class="list-inline-item m-0 p-0"><a class="btn btn-sm btn-outline-dark" href="#"><i class="far fa-heart"></i></a></li>
-                      <li class="list-inline-item m-0 p-0"><a class="btn btn-sm btn-dark" href="cart.html">Add to cart</a></li>
-                      <li class="list-inline-item mr-0"><a class="btn btn-sm btn-outline-dark" href="#productView" data-toggle="modal"><i class="fas fa-expand"></i></a></li>
-                    </ul>
-                  </div>
-                </div>
-                <h6> <a class="reset-anchor" href="detail.html">Air Jordan 12 gym red</a></h6>
-                <p class="small text-muted">$300</p>
-              </div>
-            </div>
-            <!-- PRODUCT-->
-            <div class="col-xl-3 col-lg-4 col-sm-6">
-              <div class="product text-center">
-                <div class="position-relative mb-3">
-                  <div class="badge text-white badge-"></div><a class="d-block" href="detail.html"><img class="img-fluid w-100" src="img/front/product-3.jpg" alt="..."></a>
-                  <div class="product-overlay">
-                    <ul class="mb-0 list-inline">
-                      <li class="list-inline-item m-0 p-0"><a class="btn btn-sm btn-outline-dark" href="#"><i class="far fa-heart"></i></a></li>
-                      <li class="list-inline-item m-0 p-0"><a class="btn btn-sm btn-dark" href="cart.html">Add to cart</a></li>
-                      <li class="list-inline-item mr-0"><a class="btn btn-sm btn-outline-dark" href="#productView" data-toggle="modal"><i class="fas fa-expand"></i></a></li>
-                    </ul>
-                  </div>
-                </div>
-                <h6> <a class="reset-anchor" href="detail.html">Cyan cotton t-shirt</a></h6>
-                <p class="small text-muted">$25</p>
-              </div>
-            </div>
-            <!-- PRODUCT-->
-            <div class="col-xl-3 col-lg-4 col-sm-6">
-              <div class="product text-center">
-                <div class="position-relative mb-3">
-                  <div class="badge text-white badge-info">New</div><a class="d-block" href="detail.html"><img class="img-fluid w-100" src="img/front/product-4.jpg" alt="..."></a>
-                  <div class="product-overlay">
-                    <ul class="mb-0 list-inline">
-                      <li class="list-inline-item m-0 p-0"><a class="btn btn-sm btn-outline-dark" href="#"><i class="far fa-heart"></i></a></li>
-                      <li class="list-inline-item m-0 p-0"><a class="btn btn-sm btn-dark" href="cart.html">Add to cart</a></li>
-                      <li class="list-inline-item mr-0"><a class="btn btn-sm btn-outline-dark" href="#productView" data-toggle="modal"><i class="fas fa-expand"></i></a></li>
-                    </ul>
-                  </div>
-                </div>
-                <h6> <a class="reset-anchor" href="detail.html">Timex Unisex Originals</a></h6>
-                <p class="small text-muted">$351</p>
-              </div>
-            </div>
-            <!-- PRODUCT-->
-            <div class="col-xl-3 col-lg-4 col-sm-6">
-              <div class="product text-center">
-                <div class="position-relative mb-3">
-                  <div class="badge text-white badge-danger">Sold</div><a class="d-block" href="detail.html"><img class="img-fluid w-100" src="img/front/product-5.jpg" alt="..."></a>
-                  <div class="product-overlay">
-                    <ul class="mb-0 list-inline">
-                      <li class="list-inline-item m-0 p-0"><a class="btn btn-sm btn-outline-dark" href="#"><i class="far fa-heart"></i></a></li>
-                      <li class="list-inline-item m-0 p-0"><a class="btn btn-sm btn-dark" href="cart.html">Add to cart</a></li>
-                      <li class="list-inline-item mr-0"><a class="btn btn-sm btn-outline-dark" href="#productView" data-toggle="modal"><i class="fas fa-expand"></i></a></li>
-                    </ul>
-                  </div>
-                </div>
-                <h6> <a class="reset-anchor" href="detail.html">Red digital smartwatch</a></h6>
-                <p class="small text-muted">$250</p>
-              </div>
-            </div>
-            <!-- PRODUCT-->
-            <div class="col-xl-3 col-lg-4 col-sm-6">
-              <div class="product text-center">
-                <div class="position-relative mb-3">
-                  <div class="badge text-white badge-"></div><a class="d-block" href="detail.html"><img class="img-fluid w-100" src="img/front/product-6.jpg" alt="..."></a>
-                  <div class="product-overlay">
-                    <ul class="mb-0 list-inline">
-                      <li class="list-inline-item m-0 p-0"><a class="btn btn-sm btn-outline-dark" href="#"><i class="far fa-heart"></i></a></li>
-                      <li class="list-inline-item m-0 p-0"><a class="btn btn-sm btn-dark" href="cart.html">Add to cart</a></li>
-                      <li class="list-inline-item mr-0"><a class="btn btn-sm btn-outline-dark" href="#productView" data-toggle="modal"><i class="fas fa-expand"></i></a></li>
-                    </ul>
-                  </div>
-                </div>
-                <h6> <a class="reset-anchor" href="detail.html">Nike air max 95</a></h6>
-                <p class="small text-muted">$300</p>
-              </div>
-            </div>
-            <!-- PRODUCT-->
-            <div class="col-xl-3 col-lg-4 col-sm-6">
-              <div class="product text-center">
-                <div class="position-relative mb-3">
-                  <div class="badge text-white badge-"></div><a class="d-block" href="detail.html"><img class="img-fluid w-100" src="img/front/product-7.jpg" alt="..."></a>
-                  <div class="product-overlay">
-                    <ul class="mb-0 list-inline">
-                      <li class="list-inline-item m-0 p-0"><a class="btn btn-sm btn-outline-dark" href="#"><i class="far fa-heart"></i></a></li>
-                      <li class="list-inline-item m-0 p-0"><a class="btn btn-sm btn-dark" href="cart.html">Add to cart</a></li>
-                      <li class="list-inline-item mr-0"><a class="btn btn-sm btn-outline-dark" href="#productView" data-toggle="modal"><i class="fas fa-expand"></i></a></li>
-                    </ul>
-                  </div>
-                </div>
-                <h6> <a class="reset-anchor" href="detail.html">Joemalone Women prefume</a></h6>
-                <p class="small text-muted">$25</p>
-              </div>
-            </div>
-            <!-- PRODUCT-->
-            <div class="col-xl-3 col-lg-4 col-sm-6">
-              <div class="product text-center">
-                <div class="position-relative mb-3">
-                  <div class="badge text-white badge-"></div><a class="d-block" href="detail.html"><img class="img-fluid w-100" src="img/front/product-8.jpg" alt="..."></a>
-                  <div class="product-overlay">
-                    <ul class="mb-0 list-inline">
-                      <li class="list-inline-item m-0 p-0"><a class="btn btn-sm btn-outline-dark" href="#"><i class="far fa-heart"></i></a></li>
-                      <li class="list-inline-item m-0 p-0"><a class="btn btn-sm btn-dark" href="cart.html">Add to cart</a></li>
-                      <li class="list-inline-item mr-0"><a class="btn btn-sm btn-outline-dark" href="#productView" data-toggle="modal"><i class="fas fa-expand"></i></a></li>
-                    </ul>
-                  </div>
-                </div>
-                <h6> <a class="reset-anchor" href="detail.html">Apple Watch</a></h6>
-                <p class="small text-muted">$351</p>
-              </div>
-            </div>
-          </div>
-        </section>
-        <!-- SERVICES-->
+				  ";
+							}
+							echo "</div>";
+							}
+			?>
         <section class="py-5 bg-light">
           <div class="container">
             <div class="row text-center">
@@ -317,26 +263,7 @@
           </div>
         </section>
         <!-- NEWSLETTER-->
-        <section class="py-5">
-          <div class="container p-0">
-            <div class="row">
-              <div class="col-lg-6 mb-3 mb-lg-0">
-                <h5 class="text-uppercase">Let's be friends!</h5>
-                <p class="text-small text-muted mb-0">Nisi nisi tempor consequat laboris nisi.</p>
-              </div>
-              <div class="col-lg-6">
-                <form action="#">
-                  <div class="input-group flex-column flex-sm-row mb-3">
-                    <input class="form-control form-control-lg py-3" type="email" placeholder="Enter your email address" aria-describedby="button-addon2">
-                    <div class="input-group-append">
-                      <button class="btn btn-dark btn-block" id="button-addon2" type="submit">Subscribe</button>
-                    </div>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
-        </section>
+     
       </div>
       <footer class="bg-dark text-white">
         <div class="container py-4">
@@ -392,12 +319,12 @@
       <script src="js/front/front.js"></script>
       <script>
         // ------------------------------------------------------- //
-        //   Inject SVG Sprite -
-        //   see more here
+        //   Inject SVG Sprite - 
+        //   see more here 
         //   https://css-tricks.com/ajaxing-svg-sprite/
         // ------------------------------------------------------ //
         function injectSvgSprite(path) {
-
+        
             var ajax = new XMLHttpRequest();
             ajax.open("GET", path, true);
             ajax.send();
@@ -408,12 +335,12 @@
             document.body.insertBefore(div, document.body.childNodes[0]);
             }
         }
-        // this is set to BootstrapTemple website as you cannot
+        // this is set to BootstrapTemple website as you cannot 
         // inject local SVG sprite (using only 'icons/orion-svg-sprite.svg' path)
         // while using file:// protocol
         // pls don't forget to change to your domain :)
-        injectSvgSprite('https://bootstraptemple.com/files/icons/orion-svg-sprite.svg');
-
+        injectSvgSprite('https://bootstraptemple.com/files/icons/orion-svg-sprite.svg'); 
+        
       </script>
       <!-- FontAwesome CSS - loading as last, so it doesn't block rendering-->
       <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">

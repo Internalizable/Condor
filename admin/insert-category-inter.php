@@ -1,20 +1,16 @@
 <?php
 	require_once("../controllers/database/connection.php");
-	  $conn = openCon();
+	$con = openCon();
 	date_default_timezone_set("Asia/Beirut");
-	if(isset($_POST["submit"])){
-			
-		  
+	if(isset($_POST["submit"])){	
 		if ($_POST['parentCat'] === "")
                     {
                         $_POST['parentCat'] = 'NULL';
                     }
 
-		$category_name=$_POST['categoryName'];
+		$category_name=trim($_POST['categoryName']);
 		$parent_category =$_POST['parentCat'];
-
-       
-		$categoryCheck = mysqli_query($conn,"Select name from categories WHERE name='$category_name';");
+		$categoryCheck = mysqli_query($con,"SELECT name FROM categories WHERE name='$category_name';");
 
 		if(mysqli_num_rows($categoryCheck)>0){
 			
@@ -24,33 +20,17 @@
         {
 	
 			/*insertion into categories*/
-			mysqli_query($conn, "INSERT INTO categories VALUES(0,'$category_name', $parent_category,0);"
+			mysqli_query($con, "INSERT INTO categories VALUES(0,'$category_name', $parent_category,0);"
 			);
-		
-			
-
-		
-
-
-
-
-
-
-
-			closeCon($conn);
+			closeCon($con);
 
             header("Location:e-commerce-category-new.php?success");
-
-
         }
     }
     
-
-else {
-		header("Location:e-commerce-category-new.php");
-	}
-
-
-
+else
+{
+	header("Location:e-commerce-category-new.php");
+}
 
 ?>

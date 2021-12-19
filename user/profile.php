@@ -93,7 +93,7 @@ if(!isset($_GET['id'])) {
 
             $conn = openCon();
 
-            $navQuery = mysqli_query($conn, "SELECT profile_path, firstname, lastname, username FROM USERS WHERE id='$userId';");
+            $navQuery = mysqli_query($conn, "SELECT profile_path, firstname, lastname, username FROM USERS WHERE id=$_SESSION[id];");
 
             if($row = mysqli_fetch_array($navQuery)) {
                 $navname = $row['firstname'] . ' ' . $row['lastname'];
@@ -123,7 +123,7 @@ if(!isset($_GET['id'])) {
                       ?>
                 </small>
               </div>
-              <div class="dropdown-divider"></div><a class="dropdown-item" href="">Settings</a>
+              <div class="dropdown-divider"></div><a class="dropdown-item" href="./profile?id=<?php echo base64_encode($_SESSION['id'])?>">Settings</a>
               <div class="dropdown-divider"></div><a class="dropdown-item" href="./logout">Logout</a>
             </div>
           </li>

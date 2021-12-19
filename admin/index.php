@@ -50,7 +50,7 @@
   <body>
     <!-- navbar-->
     <header class="header">
-      <nav class="navbar navbar-expand-lg px-4 py-2 bg-white shadow"><a class="sidebar-toggler text-gray-500 me-4 me-lg-5 lead" href="#"><i class="fas fa-align-left"></i></a><a class="navbar-brand fw-bold text-uppercase text-base" href="index.html"><span class="d-none d-brand-partial">Condor </span><span class="d-none d-sm-inline">Dashboard</span></a>
+      <nav class="navbar navbar-expand-lg px-4 py-2 bg-white shadow"><a class="sidebar-toggler text-gray-500 me-4 me-lg-5 lead" href="#"><i class="fas fa-align-left"></i></a><a class="navbar-brand fw-bold text-uppercase text-base" href="index.php"><span class="d-none d-brand-partial">Condor </span><span class="d-none d-sm-inline">Dashboard</span></a>
         <ul class="ms-auto d-flex align-items-center list-unstyled mb-0">
           <li class="nav-item dropdown ms-auto"><a class="nav-link pe-0" id="userInfo" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   <img class="avatar p-1" src=
@@ -71,8 +71,8 @@
                       ?>
                   </small>
               </div>
-              <div class="dropdown-divider"></div><a class="dropdown-item" href="../user/settings">Settings</a><a class="dropdown-item" href="#">Activity log</a>
-              <div class="dropdown-divider"></div><a class="dropdown-item" href="../user/logout">Logout</a>
+              <div class="dropdown-divider"></div><a class="dropdown-item" href="../user/profile?id=<?php echo base64_encode($userId)?>">Settings</a><a class="dropdown-item" href="#">Activity log</a>
+              <div class="dropdown-divider"></div><a class="dropdown-item" href="../user/logout.php">Logout</a>
             </div>
           </li>
         </ul>
@@ -82,10 +82,21 @@
       <div class="sidebar py-3" id="sidebar">
         <h6 class="sidebar-heading">Main</h6>
         <ul class="list-unstyled">
-              <li class="sidebar-list-item"><a class="sidebar-link text-muted active" href="">
+              <li class="sidebar-list-item"><a class="sidebar-link text-muted active" href="index.php">
                       <svg class="svg-icon svg-icon-md me-3">
-                        <use xlink:href="icons/orion-svg-sprite.svg#real-estate-1"> </use>
+                        <use xlink:href="../icons/back/orion-svg-sprite.svg#real-estate-1"> </use>
                       </svg><span class="sidebar-link-title">Dashboard</span></a></li>
+
+                      <li class="sidebar-list-item"><a class="sidebar-link text-muted active" href="#" data-bs-target="#e-commerceDropdown" role="button" aria-expanded="true" data-bs-toggle="collapse">
+                     <span class="sidebar-link-title">E-commerce </span></a>
+                <ul class="sidebar-menu list-unstyled collapse show" id="e-commerceDropdown">
+                <li class="sidebar-list-item"><a class="sidebar-link text-muted" href="view-categories.php">Categories</a></li>
+                <li class="sidebar-list-item"><a class="sidebar-link text-muted" href="e-commerce-category-new.php">New Category</a></li>
+                  <li class="sidebar-list-item"><a class="sidebar-link text-muted" href="view-products.php">Products</a></li>
+                  <li class="sidebar-list-item"><a class="sidebar-link  text-muted" href="e-commerce-product-new.php">New Product</a></li>
+                  <li class="sidebar-list-item"><a class="sidebar-link text-muted" href="track-orders.php">Orders</a></li>
+                </ul>
+              </li>
         </ul>
       </div>
       <div class="page-holder bg-gray-100">
@@ -281,9 +292,9 @@
                     <p class="text-gray-500 mb-5">The products are ordered based on their popularity (units sold).</p>
                     <?php
                     $conn = openCon();
-                    $query = mysqli_query($conn, "SELECT products.name AS prodName, products.desc AS prodDesc, SUM(orders.quantity * orders.unitPrice) AS prodPrice  FROM PRODUCTS JOIN ORDERS ON products.id = orders.products_id GROUP BY products.id ORDER BY prodPrice DESC LIMIT 6;");
+                    $query = mysqli_query($conn, "SELECT products.name AS prodName, products.description AS prodDesc, SUM(orders.quantity * orders.unitPrice) AS prodPrice  FROM PRODUCTS JOIN ORDERS ON products.id = orders.products_id GROUP BY products.id ORDER BY prodPrice DESC LIMIT 6;");
 
-                    if($row = mysqli_fetch_array($query)) {
+                    while($row = mysqli_fetch_array($query)) {
                     ?>
                     <div class="d-flex justify-content-between align-items-start align-items-sm-center mb-4 flex-column flex-sm-row">
                       <div class="left d-flex align-items-center">
@@ -316,8 +327,9 @@
                                 $conn = openCon();
 
                                 $date = date('Y-m-d', strtotime("-1 days"));
+                                $nextDate = date('Y-m-d');
 
-                                $query = mysqli_query($conn, "SELECT COUNT(id) AS total FROM USERS WHERE joinDate='$date';");
+                                $query = mysqli_query($conn, "SELECT COUNT(id) AS total FROM USERS WHERE joinDate BETWEEN '$date' AND '$nextDate';");
 
                                 if($row = mysqli_fetch_array($query))
                                     if($row['total'] == null)
@@ -344,7 +356,7 @@
 
                 $query = mysqli_query($conn, "SELECT id, firstname, lastname, joinDate, bio, verified, profile_path FROM USERS ORDER BY joinDate DESC LIMIT 5;");
 
-                if($row = mysqli_fetch_array($query)) {
+                while($row = mysqli_fetch_array($query)) {
                     $date = DateTime::createFromFormat("Y-m-d", $row['joinDate']);
                 ?>
               <div class="col-sm-6 col-xl-12"><a class="message card px-5 py-3 mb-4 bg-hover-gradient-primary text-decoration-none text-reset" href="../user/profile?id=<?php echo base64_encode($row['id']);?>">

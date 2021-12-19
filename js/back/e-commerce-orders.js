@@ -17,10 +17,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Add Bulk Actions Select & Bootstrap styles to the elements
     // in the header
     dataTable.on("datatable.init", function () {
-        const select = document.getElementById("categoryBulkAction");
         const header = document.querySelector(".dataTable-top .dataTable-dropdown");
-
-        header.prepend(select);
 
         const input = document.querySelector(".dataTable-input");
         input.classList.add("form-control", "form-control-sm");

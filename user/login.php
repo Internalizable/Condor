@@ -50,7 +50,7 @@ if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
                   <div class="col">
                     <label class="form-label">Password</label>
                   </div>
-                  <div class="col-auto"><a class="form-text small text-muted" href="#">Forgot your password?</a></div>
+                  <div class="col-auto"><a class="form-text small text-muted" href="reset.php">Forgot your password?</a></div>
                 </div>
                 <input class="form-control" id="password" name="password" type="password">
                   <div class="valid-feedback">Looks good!</div>

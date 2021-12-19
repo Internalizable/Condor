@@ -3,8 +3,8 @@
 	  $con = openCon();
 	date_default_timezone_set("Asia/Beirut");
 	if(isset($_POST["submit"])){
-			
-		  
+
+
         $product_id=$_POST['productId'];
 		$product_name=$_POST['productName'];
         $product_desc=$_POST['productDesc'];
@@ -14,7 +14,7 @@
         $product_quantity=$_POST['productQuantity'];
         $product_tags =      explode(',', $_POST['productTags']);
 
-    
+
         $val_tag_array="";
 
 
@@ -28,7 +28,7 @@
         while($val_tag= mysqli_fetch_array($getTagValues))
         {
             $val_tag_array.=$val_tag['tags_tag'].",";
-        
+
         }
         $val_tag_array=substr($val_tag_array, 0, -1); //existing values in the db
 
@@ -38,7 +38,7 @@
 
 
 		if(mysqli_num_rows($getProdValues)<0){
-			
+
 			echo"<p>error</p>";
 		}
 		else
@@ -85,7 +85,7 @@
 			/*insertion into products_categories*/
             //$product_id=mysqli_insert_id($con);
 			 mysqli_query($con,"UPDATE products_categories SET categories_id=$product_category where products_id =".$product_id);
-			
+
 
 			/*insertion into media*/
 
@@ -93,10 +93,10 @@
 
 			  $uploadsDir = "../img/back/product/";
               $allowedFileType = array('jpg','png','jpeg');
-        
+
         // Velidate if files exist
         if (!empty(array_filter($_FILES["productImg"]["name"]))) {
-            
+
             // Loop through file items
             foreach($_FILES["productImg"]["name"] as $id=>$val){
                 // Get files upload path
@@ -106,29 +106,29 @@
                 $targetFilePath  = $uploadsDir . $fileName;
                 $fileType        = strtolower(pathinfo($targetFilePath, PATHINFO_EXTENSION));
                 $new_img_name=$uploadsDir."product-".  $product_id."-".$random.".".$fileType;
-       
- 
+
+
 
                 if(in_array($fileType, $allowedFileType)){
                         if(move_uploaded_file($tempLocation,  $new_img_name)){
-                            $sqlVal = "product-".  $product_id."-".$random.".".$fileType;
-                           
-                            
-                        } 
+                            $sqlVal = "img/back/product/product-".  $product_id."-".$random.".".$fileType;
+
+
+                        }
                 }
 
               if(!empty($sqlVal)) {
                 //    $insert = mysqli_query($con,"INSERT INTO media VALUES ('$sqlVal');");
                    $insert2=mysqli_query($con,"INSERT INTO products_media VALUES ( '$product_id','$sqlVal');");
-                   
+
             }
             }//end of foreach
 
 
-   
 
-  
-  
+
+
+
 
 
 }
@@ -142,42 +142,42 @@
                 if($product_tags != $val_tag_array ) //if the admin changed sth
                 {
 
-               
-                    
-                
-           $sqltag=""; 
-           $sqlprodtag="";   
+
+
+
+           $sqltag="";
+           $sqlprodtag="";
            foreach ($product_tags as $tag_name){
                 //modify below to add $id along with $tag_name
                   $sqltag.="('{$tag_name}'),";
                   $sqlprodtag.="('{$product_id}','{$tag_name}'),";
-               
+
 
             }//end of foreach
-            
+
                 if($sqltag!="" &&   $sqlprodtag!="" ){
-                        //rtrim to remove last ',' from string. 
+                        //rtrim to remove last ',' from string.
                           $sqltag=substr($sqltag, 0, -1);
                           $sqlprodtag=substr( $sqlprodtag, 0, -1);
-                 
-                 
+
+
                  }
 
-                 $checkTag=mysqli_query($con,"select * from tags where tag in ('". implode(',', $product_tags) . "')");
-                 
+                 /*$checkTag=mysqli_query($con,"select * from tags where tag in ('". implode(',', $product_tags) . "')");
+
                  if(mysqli_num_rows($checkTag)==0){
                       $sqltag="INSERT INTO tags VALUES {$sqltag};";
-				 }
-          
+				 }*/
+
                      //delete the existing tags (in products_tags only)
                  $deleteOld="DELETE from products_tags where products_id=".$product_id;
                  $deleteRes=mysqli_query($con, $deleteOld);
 
-               //  and insert the new ones 
+               //  and insert the new ones
             $sqlprodtag="INSERT INTO products_tags VALUES {$sqlprodtag};";
             $insert_into_tag=mysqli_query($con,$sqltag);
             $insert_into_prod_tag=mysqli_query($con, $sqlprodtag);
-        }   
+        }
 
 
 
@@ -198,14 +198,14 @@
 
             }
           */
-       
-         //header("Location:view-products.php");
-       
+
+         header("Location:view-products.php");
+
 
 
         }
     }
-    
+
 
 else {
 		header("Location:update-product.php?error=2");
